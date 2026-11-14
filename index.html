@@ -9,37 +9,40 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
-/* 레이아웃: 검토용 라이트테이블. 작업물이 주인공이므로 화면은 중립 회색, 시안 색은 칩으로만 */
+/* 레이아웃: 한 방향 흐름 — 메인(시안 목록) → 시안 페이지(목차 + 장면을 한 행에 하나씩, 위→아래). 작업물이 주인공이라 화면은 중립 회색 */
 :root{
   --bg:#ECEDEE; --surface:#F7F7F8; --line:#D3D5D9; --fg:#1D2229; --muted:#5D6570; --accent:#1B2A4A; --accent-fg:#FFFFFF; --stage:#DCDEE1;
   --f-display:"Nanum Myeongjo","Noto Serif KR",Georgia,serif;
   --f-ui:"Noto Sans KR","Malgun Gothic","Apple SD Gothic Neo",system-ui,sans-serif;
+  --head-h:60px;
 }
 @media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
   --bg:#16191D; --surface:#1F2328; --line:#343A42; --fg:#E7E9EC; --muted:#A3AAB3; --accent:#9DB5E0; --accent-fg:#0F1621; --stage:#24292F; color-scheme:dark}}
 :root[data-theme="dark"]{
   --bg:#16191D; --surface:#1F2328; --line:#343A42; --fg:#E7E9EC; --muted:#A3AAB3; --accent:#9DB5E0; --accent-fg:#0F1621; --stage:#24292F; color-scheme:dark}
 body{background:var(--bg);color:var(--fg);font-family:var(--f-ui);font-size:15px;line-height:1.6}
-.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 64px}
+.wrap{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 72px}
 a{color:inherit}
 h1,h2,h3{text-wrap:balance;margin:0}
 .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:500}
 .mono{font-variant-numeric:tabular-nums}
 button{font:inherit;color:inherit}
 :focus-visible{outline:2px solid var(--accent);outline-offset:3px}
+html{scroll-behavior:smooth}
 
-/* 상단 바 */
+/* 헤더: 모든 화면에서 같은 구성 */
 .top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
 body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);z-index:10;background:var(--bg)}
-.top .wrap{padding-block:12px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}
-.crumbs{display:flex;gap:8px;align-items:center;font-size:14px;min-width:0;flex-wrap:wrap}
-.crumbs a{text-decoration:none;color:var(--muted)} .crumbs a:hover{color:var(--fg)}
-.crumbs .sep{color:var(--line)}
+.top .wrap{padding-block:12px;display:flex;align-items:center;gap:10px 18px;flex-wrap:wrap}
+.brand{font-weight:700;text-decoration:none;font-size:15px}
+.tabs{display:flex;gap:4px}
+.tabs a{text-decoration:none;font-size:14px;color:var(--muted);padding:5px 10px;border-radius:6px}
+.tabs a:hover{color:var(--fg)}
+.tabs a[aria-current="page"]{color:var(--fg);background:var(--surface);box-shadow:inset 0 0 0 1px var(--line)}
 .top .spacer{flex:1}
 .btn{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);background:var(--surface);padding:7px 14px;border-radius:6px;cursor:pointer;text-decoration:none;font-size:14px;white-space:nowrap}
 .btn:hover{border-color:var(--muted)}
 .btn.primary{background:var(--accent);color:var(--accent-fg);border-color:var(--accent)}
-.btn[disabled]{opacity:.4;cursor:default}
 
 /* 메인 */
 .intro{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:32px;align-items:end;padding-block:12px 28px;border-bottom:1px solid var(--line)}
@@ -47,8 +50,6 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .intro p{color:var(--muted);margin:10px 0 0;max-width:60ch}
 .spec{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:13.5px;margin:0}
 .spec dt{color:var(--muted)} .spec dd{margin:0}
-.steps{display:flex;gap:8px;flex-wrap:wrap;margin-top:20px;font-size:13px;color:var(--muted)}
-.steps span{border:1px solid var(--line);border-radius:999px;padding:3px 10px}
 .plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:28px}
 .card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;text-decoration:none;transition:border-color .15s}
 .card:hover{border-color:var(--muted)}
@@ -62,74 +63,61 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .chip i{width:14px;height:14px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.12)}
 .card .go{margin-top:4px;font-weight:700;font-size:14px}
 
-/* 시안 개요 */
-.ov-head{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:28px;align-items:center;padding-block:8px 28px}
-.ov-head img{width:100%;display:block;border-radius:8px;background:var(--stage);cursor:zoom-in}
-.ov-head h1{font-family:var(--f-display);font-size:clamp(26px,3.6vw,38px);font-weight:800;line-height:1.25}
-.ov-head p{color:var(--muted);margin:10px 0 18px}
-.sys{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-block:8px 32px}
+/* 시안 페이지 */
+.plan-head{padding-block:8px 24px;border-bottom:1px solid var(--line)}
+.plan-head h1{font-family:var(--f-display);font-size:clamp(26px,3.6vw,38px);font-weight:800;line-height:1.25;margin-top:4px}
+.plan-head p{color:var(--muted);margin:10px 0 0;max-width:70ch}
+.sys{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:24px}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;min-width:0}
 .panel h3{font-size:13px;letter-spacing:.08em;color:var(--muted);font-weight:700;margin-bottom:10px}
 .type-row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;border-top:1px solid var(--line);font-size:13.5px}
 .type-row:first-of-type{border-top:0}
-.type-row b{font-weight:700}
 .colors{display:grid;grid-template-columns:auto 1fr 1fr;gap:6px 12px;font-size:13px;align-items:center}
 .colors .h{color:var(--muted);font-size:12px}
 .sw{display:flex;align-items:center;gap:6px}
 .sw i{width:16px;height:16px;border-radius:3px;border:1px solid rgba(0,0,0,.12);flex:none}
-.book{margin-top:26px}
-.book h2{font-size:18px;font-weight:700;display:flex;align-items:baseline;gap:10px;margin-bottom:12px}
-.book h2 span{font-size:13px;color:var(--muted);font-weight:400}
-.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-.thumb{display:flex;flex-direction:column;gap:8px;text-decoration:none;min-width:0}
-.thumb .fr{background:var(--stage);border-radius:6px;aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;padding:10px;border:1px solid transparent}
-.thumb:hover .fr{border-color:var(--muted)}
-.thumb img{max-height:100%;max-width:100%;object-fit:contain;box-shadow:0 1px 4px rgba(0,0,0,.18)}
-.thumb .cap{font-size:13px;display:flex;gap:8px}
-.thumb .cap .n{color:var(--muted)}
-.thumb.wide{grid-column:span 2}
-.thumb.wide .fr{aspect-ratio:8/3}
 
-/* 상세 보기 */
-.viewer{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:24px;align-items:start}
-.stage{background:var(--stage);border-radius:10px;padding:clamp(12px,3vw,32px);display:flex;justify-content:center;align-items:center;min-height:300px;overflow:auto}
-.stage img{display:block;max-width:100%;max-height:calc(100vh - 240px);box-shadow:0 2px 10px rgba(0,0,0,.2);cursor:zoom-in}
-.stage.zoom{justify-content:flex-start;align-items:flex-start}
-.stage.zoom img{max-width:none;max-height:none;width:200%;cursor:zoom-out}
-.side{position:sticky;top:calc(env(safe-area-inset-top,0px) + 76px);display:flex;flex-direction:column;gap:16px;min-width:0}
-.side .count{font-size:13px;color:var(--muted)}
-.side h1{font-size:22px;font-weight:700;line-height:1.35}
-.side .book-tag{display:inline-block;font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--muted)}
-.side ul{margin:0;padding-left:18px;font-size:14px;display:flex;flex-direction:column;gap:6px}
-.side .nav{display:flex;gap:8px}
-.side .nav .btn{flex:1;justify-content:center}
-.hint{font-size:12px;color:var(--muted)}
-.strip{display:flex;gap:8px;overflow-x:auto;padding:16px 2px 4px;margin-top:20px}
-.strip a{flex:none;width:92px;text-decoration:none;font-size:11px;color:var(--muted);display:flex;flex-direction:column;gap:4px}
-.strip a .fr{height:64px;background:var(--stage);border-radius:4px;display:flex;align-items:center;justify-content:center;border:2px solid transparent;overflow:hidden}
-.strip a img{max-height:56px;max-width:84px}
-.strip a[aria-current="true"] .fr{border-color:var(--accent)}
-.strip a[aria-current="true"]{color:var(--fg)}
+.toc{margin-top:28px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.toc .grp{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.toc h3{font-size:14px;font-weight:700;margin-bottom:6px}
+.toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.toc button{display:flex;gap:10px;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:8px 2px;cursor:pointer;font-size:14px}
+.toc li:first-child button{border-top:0}
+.toc button:hover{color:var(--accent)}
+.toc .n{color:var(--muted);min-width:2ch}
+
+.scene{scroll-margin-top:calc(env(safe-area-inset-top,0px) + var(--head-h) + 16px);margin-top:48px}
+.scene-head{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin-bottom:12px}
+.scene-head .n{font-size:13px;color:var(--muted)}
+.scene-head h2{font-size:20px;font-weight:700}
+.tag{font-size:12px;border:1px solid var(--line);border-radius:999px;padding:2px 10px;color:var(--muted)}
+.scene figure{margin:0;background:var(--stage);border-radius:10px;padding:clamp(10px,2.5vw,28px)}
+.scene img{display:block;width:100%;height:auto;box-shadow:0 2px 10px rgba(0,0,0,.18)}
+.scene img.page{max-width:620px;margin:0 auto}
+.points{margin:12px 0 0;padding-left:18px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
+.book-div{margin-top:56px;padding-top:20px;border-top:2px solid var(--fg);display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
+.book-div h2{font-family:var(--f-display);font-size:24px;font-weight:800}
+.book-div span{color:var(--muted);font-size:14px}
+.end{margin-top:56px;padding-top:24px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
 
 @media (max-width:860px){
-  .intro,.ov-head{grid-template-columns:1fr}
-  .plans{grid-template-columns:1fr}
-  .sys{grid-template-columns:1fr}
-  .grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-  .viewer{grid-template-columns:1fr}
-  .side{position:static}
-  .stage img{max-height:none}
+  .intro{grid-template-columns:1fr}
+  .plans,.sys,.toc{grid-template-columns:1fr}
 }
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important} html{scroll-behavior:auto}}
 </style>
 </head>
 <body>
 
 <header class="top">
   <div class="wrap">
-    <nav class="crumbs" id="crumbs" aria-label="위치"></nav>
+    <a class="brand" href="#home">2025 대전광역시 연보 시안</a>
+    <nav class="tabs" aria-label="시안">
+      <a href="#plan-1" data-plan="1">1안 기하 구성</a>
+      <a href="#plan-2" data-plan="2">2안 데이터 흐름</a>
+    </nav>
     <div class="spacer"></div>
-    <div id="topActions"></div>
+    <a class="btn primary" href="#home">처음부터 검토</a>
   </div>
 </header>
 <main class="wrap" id="app"></main>
@@ -137,66 +125,63 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 <script>
 const IMG = n => "img/" + n;
 const PLANS = {
-  "2": {
-    name: "2안", title: "기하 구성",
+  "1": {
+    name: "1안", title: "기하 구성",
     concept: "원·동심원·눈금·점 격자로 '측정하고 기록하는' 인상을 만든 안입니다. 강한 색은 핵심 원 하나에만 쓰고, 그래픽은 판형 밖으로 넘어가며 뒤표지까지 하나로 이어집니다.",
     books: {
-      tb: { key: "#EC5A3E", acc: "#1B2A4A", bg: "#EEEDE9", keyName: "코럴", accName: "짙은 남색" },
-      gs: { key: "#1F6AB0", acc: "#1E7B5A", bg: "#EEEDE9", keyName: "블루", accName: "짙은 녹색" }
+      tb: { key: "#EC5A3E", acc: "#1B2A4A", bg: "#EEEDE9", keyName: "코럴" },
+      gs: { key: "#1F6AB0", acc: "#17402F", bg: "#EEEDE9", keyName: "블루" }
     }
   },
-  "3": {
-    name: "3안", title: "데이터 흐름",
+  "2": {
+    name: "2안", title: "데이터 흐름",
     concept: "여러 겹의 그라데이션 리본으로 해마다 이어지는 데이터의 흐름을 표현한 안입니다. 리본 결을 따라 가는 선을 겹쳐 정교함을 더했고, 두 권은 같은 구성에 배색만 다릅니다.",
     books: {
-      tb: { key: "#E8365D", acc: "#1B2A4A", bg: "#FFF7F3", keyName: "핑크레드", accName: "짙은 남색" },
-      gs: { key: "#2F6BFF", acc: "#1E7B5A", bg: "#F3F8FC", keyName: "블루", accName: "짙은 녹색" }
+      tb: { key: "#E8365D", acc: "#1B2A4A", bg: "#FFF7F3", keyName: "핑크레드" },
+      gs: { key: "#2F6BFF", acc: "#17402F", bg: "#F3F8FC", keyName: "블루" }
     }
   }
 };
-const BOOKNAME = { tb: "결핵연보", gs: "감시연보" };
-// 검토 순서 (시안마다 같음)
-const STEPS = [
-  { id: "mockup", book: null, title: "목업", wide: true,
-    points: ["두 권을 나란히 놓았을 때 시리즈로 보이는지", "실물 크기 비율(176×250mm, 책등 1cm 미만)에서의 인상"] },
-  { id: "cover", book: "tb", title: "표지 펼침면", wide: true,
-    points: ["앞표지 → 책등 → 뒤표지로 그래픽이 자연스럽게 이어지는지", "제목 크기·행간(에스코어 드림 700, 행간 1.1)", "기관 로고 배치(대전광역시, 감염병관리지원단)", "책등: 세로쓰기, 제목 위 원형 표시"] },
-  { id: "cover", book: "gs", title: "표지 펼침면", wide: true,
-    points: ["앞표지 → 책등 → 뒤표지 연결", "기관 로고 3종 배치(질병관리청, 감염병관리지원단, 대전광역시)", "보조색(짙은 녹색)이 가는 선·작은 원에만 쓰였는지"] },
-  { id: "spec", book: "tb", title: "디자인 시스템 스펙",
-    points: ["서체 체계: 제목 에스코어 드림 / 본문 나눔명조 / 표·캡션·부록 나눔고딕", "강조색과 보조색(짙은 남색)의 쓰임"] },
-  { id: "toc", book: "tb", title: "목차 펼침", wide: true,
-    points: ["괘선·장 번호는 강조색, 쪽번호·[표 n] 번호는 짙은 남색", "쪽번호는 전년도 기준 가안"] },
-  { id: "div", book: "tb", title: "간지 펼침", wide: true,
-    points: ["왼쪽 그래픽이 표지와 같은 언어인지", "장 번호·제목·수록 목록의 위계"] },
-  { id: "body", book: "tb", title: "본문 샘플",
-    points: ["머리말·쪽번호, 장·절·항 제목 위계", "표 스타일: 머리행 강조색, 당해 연도 행 강조, 캡션·단위·주석"] },
-  { id: "spec", book: "gs", title: "디자인 시스템 스펙",
-    points: ["서체 체계는 결핵연보와 같음", "보조색은 짙은 녹색(감시연보 전용)"] },
-  { id: "toc", book: "gs", title: "목차 펼침", wide: true,
-    points: ["2024 감시연보 구성에 연도만 바꾼 가안 (원고 미수령)", "로마 숫자 장 번호(I~IV)와 1단계 항목 강조"] },
-  { id: "div", book: "gs", title: "간지 펼침", wide: true,
-    points: ["표지 그래픽과 같은 선 구성(녹색 실선·눈금)", "장 번호·제목 위계"] },
-  { id: "body", book: "gs", title: "본문 샘플",
-    points: ["문안과 표는 예시 (원고 미수령)", "표·캡션 스타일은 결핵연보와 같은 규칙"] }
+const ORDER = ["1", "2"];
+const BOOK = {
+  tb: { name: "결핵연보", full: "2025 대전광역시 결핵환자 신고현황 연보" },
+  gs: { name: "감시연보", full: "2025 대전광역시 감염병 감시연보" }
+};
+// 권별 장면 (위 → 아래 순서)
+const SCENES = [
+  { id: "cover", title: "표지 펼침면", wide: true, points: {
+      tb: ["앞표지 → 책등 → 뒤표지로 그래픽이 자연스럽게 이어지는지", "제목 크기·행간(에스코어 드림 700, 행간 1.1)", "기관 로고(대전광역시, 감염병관리지원단)", "책등: 세로쓰기, 제목 위 원형 표시"],
+      gs: ["앞표지 → 책등 → 뒤표지 연결", "기관 로고 3종(질병관리청, 감염병관리지원단, 대전광역시)", "보조색(짙은 녹색)이 가는 선·작은 원에만 쓰였는지"] } },
+  { id: "spec", title: "디자인 시스템 스펙", points: {
+      tb: ["서체: 제목 에스코어 드림 / 본문 나눔명조 / 표·캡션·부록 나눔고딕", "강조색과 보조색(짙은 남색)의 쓰임"],
+      gs: ["서체 체계는 결핵연보와 같음", "보조색은 짙은 녹색(감시연보 전용)"] } },
+  { id: "toc", title: "목차 펼침", wide: true, points: {
+      tb: ["괘선·장 번호는 강조색, 쪽번호·[표 n] 번호는 짙은 남색", "쪽번호는 전년도 기준 가안"],
+      gs: ["2024 감시연보 구성에 연도만 바꾼 가안 (원고 미수령)", "로마 숫자 장 번호(I~IV)와 1단계 항목 강조"] } },
+  { id: "div", title: "간지 펼침", wide: true, points: {
+      tb: ["왼쪽 그래픽이 표지와 같은 언어인지", "장 번호·제목·수록 목록의 위계"],
+      gs: ["표지 그래픽과 같은 선 구성(녹색 실선·눈금)", "장 번호·제목 위계"] } },
+  { id: "body", title: "본문 샘플", points: {
+      tb: ["머리말·쪽번호, 장·절·항 제목 위계", "표: 머리행 강조색, 당해 연도 행 강조, 캡션·단위·주석"],
+      gs: ["문안과 표는 예시 (원고 미수령)", "표·캡션 규칙은 결핵연보와 같음"] } }
 ];
-const srcOf = (p, s) => IMG(s.book ? `p${p}_${s.book}_${s.id}.jpg` : `p${p}_mockup.jpg`);
-const labelOf = s => (s.book ? BOOKNAME[s.book] + " · " : "") + s.title;
 const esc = t => String(t).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
-
 const app = document.getElementById("app");
-const crumbs = document.getElementById("crumbs");
-const topActions = document.getElementById("topActions");
 
 function chip(color, label) { return `<span class="chip"><i style="background:${color}"></i>${esc(label)}</span>`; }
 
+function setTabs(k) {
+  document.querySelectorAll(".tabs a").forEach(a => {
+    if (a.dataset.plan === k) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+}
+
 function home() {
   document.title = "2025 대전 연보 시안 검토";
-  crumbs.innerHTML = `<b>2025 대전광역시 연보 시안</b>`;
-  topActions.innerHTML = `<a class="btn primary" href="#plan-2-1">처음부터 검토</a>`;
-  const cards = Object.entries(PLANS).map(([k, p]) => `
+  setTabs(null);
+  const cards = ORDER.map(k => { const p = PLANS[k]; return `
     <a class="card" href="#plan-${k}">
-      <img src="${IMG(`p${k}_mockup.jpg`)}" alt="${p.name} 결핵연보·감시연보 목업" loading="lazy">
+      <img src="${IMG(`p${k}_mockup.jpg`)}" alt="${p.name} 결핵연보·감시연보 목업">
       <div class="body">
         <h2>${p.name}<small>${esc(p.title)}</small></h2>
         <p>${esc(p.concept)}</p>
@@ -204,16 +189,15 @@ function home() {
           ${chip(p.books.tb.key, "결핵 강조 " + p.books.tb.keyName)}${chip(p.books.gs.key, "감시 강조 " + p.books.gs.keyName)}
           ${chip(p.books.tb.acc, "결핵 보조 남색")}${chip(p.books.gs.acc, "감시 보조 녹색")}
         </div>
-        <span class="go">시안 보기 →</span>
+        <span class="go">${p.name} 검토하기 →</span>
       </div>
-    </a>`).join("");
+    </a>`; }).join("");
   app.innerHTML = `
     <section class="intro">
       <div>
         <div class="eyebrow">Design review</div>
         <h1>2025 대전광역시<br>결핵연보 · 감염병 감시연보</h1>
-        <p>표지와 내지 디자인 시스템 시안입니다. 시안을 고르면 목업부터 표지, 목차, 간지, 본문 샘플까지 순서대로 볼 수 있습니다.</p>
-        <div class="steps">${["목업", "표지 펼침면", "디자인 시스템", "목차", "간지", "본문 샘플"].map((t, i) => `<span>${i + 1}. ${t}</span>`).join("")}</div>
+        <p>표지와 내지 디자인 시스템 시안입니다. 아래에서 시안을 고르면 표지, 디자인 시스템, 목차, 간지, 본문 샘플을 결핵연보·감시연보 순서로 이어서 볼 수 있습니다.</p>
       </div>
       <dl class="spec">
         <dt>판형</dt><dd class="mono">176 × 250mm (도련 3mm), 책등 결핵 6mm · 감시 8mm</dd>
@@ -224,108 +208,75 @@ function home() {
       </dl>
     </section>
     <section class="plans" aria-label="시안 목록">${cards}</section>`;
+  window.scrollTo(0, 0);
 }
 
-function overview(k) {
+function planPage(k) {
   const p = PLANS[k];
   document.title = `${p.name} ${p.title} · 시안 검토`;
-  crumbs.innerHTML = `<a href="#home">시안 목록</a><span class="sep">/</span><b>${p.name} ${esc(p.title)}</b>`;
-  topActions.innerHTML = `<a class="btn primary" href="#plan-${k}-1">상세 보기 시작</a>`;
-  const thumbs = book => STEPS.map((s, i) => ({ s, i })).filter(o => o.s.book === book).map(({ s, i }) => `
-    <a class="thumb${s.wide ? " wide" : ""}" href="#plan-${k}-${i + 1}">
-      <div class="fr"><img src="${srcOf(k, s)}" alt="${esc(labelOf(s))}" loading="lazy"></div>
-      <div class="cap"><span class="n mono">${String(i + 1).padStart(2, "0")}</span>${esc(s.title)}</div>
-    </a>`).join("");
+  setTabs(k);
+  const nextK = ORDER[ORDER.indexOf(k) + 1];
+  let n = 0;
+  const numbered = [];
+  ["tb", "gs"].forEach(bk => SCENES.forEach(s => numbered.push({ bk, s, n: ++n })));
+  const toc = ["tb", "gs"].map(bk => `
+    <div class="grp"><h3>${BOOK[bk].name}</h3><ol>
+      ${numbered.filter(o => o.bk === bk).map(o => `<li><button type="button" data-go="s-${o.bk}-${o.s.id}"><span class="n mono">${String(o.n).padStart(2, "0")}</span>${esc(o.s.title)}</button></li>`).join("")}
+    </ol></div>`).join("");
+  const scenes = ["tb", "gs"].map(bk => `
+    <div class="book-div"><h2>${BOOK[bk].name}</h2><span>${BOOK[bk].full}</span></div>
+    ${numbered.filter(o => o.bk === bk).map(o => `
+      <section class="scene" id="s-${bk}-${o.s.id}">
+        <div class="scene-head"><span class="n mono">${String(o.n).padStart(2, "0")} / ${numbered.length}</span><h2>${esc(o.s.title)}</h2><span class="tag">${BOOK[bk].name}</span></div>
+        <figure><img class="${o.s.wide ? "" : "page"}" src="${IMG(`p${k}_${bk}_${o.s.id}.jpg`)}" alt="${p.name} ${BOOK[bk].name} ${esc(o.s.title)}" loading="lazy"></figure>
+        <ul class="points">${o.s.points[bk].map(t => `<li>${esc(t)}</li>`).join("")}</ul>
+      </section>`).join("")}`).join("");
   const colorRow = (label, key) => `<span class="h">${label}</span>
     <span class="sw"><i style="background:${p.books.tb[key]}"></i><span class="mono">${p.books.tb[key]}</span></span>
     <span class="sw"><i style="background:${p.books.gs[key]}"></i><span class="mono">${p.books.gs[key]}</span></span>`;
   app.innerHTML = `
-    <section class="ov-head">
-      <img src="${IMG(`p${k}_mockup.jpg`)}" alt="${p.name} 목업" id="ovMock">
-      <div>
-        <div class="eyebrow">${p.name}</div>
-        <h1>${esc(p.title)}</h1>
-        <p>${esc(p.concept)}</p>
-        <a class="btn primary" href="#plan-${k}-1">상세 보기 시작 · ${STEPS.length}장</a>
-      </div>
-    </section>
-    <section class="sys" aria-label="디자인 시스템 요약">
-      <div class="panel"><h3>서체</h3>
-        <div class="type-row"><b>제목·중제목</b><span>에스코어 드림 500–700</span></div>
-        <div class="type-row"><b>본문·목차 항목</b><span>나눔명조 9.5pt</span></div>
-        <div class="type-row"><b>표·캡션·부록</b><span>나눔고딕 7–8.5pt</span></div>
-        <div class="type-row"><b>표지 제목</b><span>드림 700 · 29pt · 행간 1.1</span></div>
-      </div>
-      <div class="panel"><h3>색상</h3>
-        <div class="colors"><span></span><span class="h">결핵연보</span><span class="h">감시연보</span>
-          ${colorRow("강조", "key")}${colorRow("보조", "acc")}${colorRow("바탕", "bg")}
+    <section class="plan-head">
+      <div class="eyebrow">${p.name}</div>
+      <h1>${esc(p.title)}</h1>
+      <p>${esc(p.concept)}</p>
+      <div class="sys" aria-label="디자인 시스템 요약">
+        <div class="panel"><h3>서체</h3>
+          <div class="type-row"><b>제목·중제목</b><span>에스코어 드림 500–700</span></div>
+          <div class="type-row"><b>본문·목차 항목</b><span>나눔명조 9.5pt</span></div>
+          <div class="type-row"><b>표·캡션·부록</b><span>나눔고딕 7–8.5pt</span></div>
+          <div class="type-row"><b>표지 제목</b><span>드림 700 · 29pt · 행간 1.1</span></div>
+        </div>
+        <div class="panel"><h3>색상</h3>
+          <div class="colors"><span></span><span class="h">결핵연보</span><span class="h">감시연보</span>
+            ${colorRow("강조", "key")}${colorRow("보조", "acc")}${colorRow("바탕", "bg")}
+          </div>
+        </div>
+        <div class="panel"><h3>색 쓰임</h3>
+          <div class="type-row"><b>강조</b><span>괘선, 장 번호·제목, 표 머리</span></div>
+          <div class="type-row"><b>보조</b><span>쪽번호, [표 n] 번호, 항 제목</span></div>
+          <div class="type-row"><b>표지 보조색</b><span>작은 원, 일부 가는 선</span></div>
         </div>
       </div>
-      <div class="panel"><h3>색 쓰임</h3>
-        <div class="type-row"><b>강조</b><span>괘선, 장 번호·제목, 표 머리</span></div>
-        <div class="type-row"><b>보조</b><span>쪽번호, [표 n] 번호, 항 제목</span></div>
-        <div class="type-row"><b>표지 보조색</b><span>작은 원, 일부 가는 선</span></div>
-      </div>
+      <nav class="toc" aria-label="${p.name} 목차">${toc}</nav>
     </section>
-    <section class="book"><h2>공통<span>두 권 함께</span></h2><div class="grid">${thumbs(null)}</div></section>
-    <section class="book"><h2>결핵연보<span>2025 대전광역시 결핵환자 신고현황 연보</span></h2><div class="grid">${thumbs("tb")}</div></section>
-    <section class="book"><h2>감시연보<span>2025 대전광역시 감염병 감시연보</span></h2><div class="grid">${thumbs("gs")}</div></section>`;
-  document.getElementById("ovMock").onclick = () => { location.hash = `plan-${k}-1`; };
-}
-
-function detail(k, n) {
-  const p = PLANS[k];
-  const i = Math.min(Math.max(n, 1), STEPS.length) - 1;
-  const s = STEPS[i];
-  const other = k === "2" ? "3" : "2";
-  document.title = `${p.name} ${labelOf(s)} · 시안 검토`;
-  crumbs.innerHTML = `<a href="#home">시안 목록</a><span class="sep">/</span><a href="#plan-${k}">${p.name} ${esc(p.title)}</a><span class="sep">/</span><b>${esc(labelOf(s))}</b>`;
-  topActions.innerHTML = `<a class="btn" href="#plan-${k}">한눈에 보기</a>`;
-  const prev = i > 0 ? `#plan-${k}-${i}` : null;
-  const next = i < STEPS.length - 1 ? `#plan-${k}-${i + 2}` : null;
-  const strip = STEPS.map((t, j) => `
-    <a href="#plan-${k}-${j + 1}" aria-current="${j === i}">
-      <div class="fr"><img src="${srcOf(k, t)}" alt="" loading="lazy"></div>
-      <span>${String(j + 1).padStart(2, "0")} ${esc(t.book ? (t.book === "tb" ? "결핵 " : "감시 ") + t.title : t.title)}</span>
-    </a>`).join("");
-  app.innerHTML = `
-    <section class="viewer">
-      <div class="stage" id="stage"><img src="${srcOf(k, s)}" alt="${esc(p.name + " " + labelOf(s))}" id="big"></div>
-      <aside class="side">
-        <div class="count mono">${p.name} · ${i + 1} / ${STEPS.length}</div>
-        <div>${s.book ? `<span class="book-tag">${BOOKNAME[s.book]}</span>` : `<span class="book-tag">결핵연보 · 감시연보</span>`}</div>
-        <h1>${esc(s.title)}</h1>
-        <div><div class="eyebrow" style="margin-bottom:6px">검토 포인트</div><ul>${s.points.map(t => `<li>${esc(t)}</li>`).join("")}</ul></div>
-        <div class="nav">
-          ${prev ? `<a class="btn" href="${prev}">← 이전</a>` : `<button class="btn" disabled>← 이전</button>`}
-          ${next ? `<a class="btn primary" href="${next}">다음 →</a>` : `<a class="btn primary" href="#plan-${other}-1">${PLANS[other].name}으로 →</a>`}
-        </div>
-        <div class="hint">이미지를 누르면 크게 볼 수 있습니다. 키보드 ← → 로도 넘길 수 있습니다.</div>
-      </aside>
-    </section>
-    <nav class="strip" aria-label="${p.name} 전체 장면">${strip}</nav>`;
-  const stage = document.getElementById("stage");
-  document.getElementById("big").onclick = () => stage.classList.toggle("zoom");
-  const cur = document.querySelector('.strip a[aria-current="true"]');
-  if (cur) cur.scrollIntoView({ block: "nearest", inline: "center" });
+    ${scenes}
+    <div class="end">
+      <a class="btn" href="#home">← 시안 목록</a>
+      ${nextK ? `<a class="btn primary" href="#plan-${nextK}">다음: ${PLANS[nextK].name} ${esc(PLANS[nextK].title)} →</a>` : `<a class="btn primary" href="#home">검토 마침 · 시안 목록으로</a>`}
+    </div>`;
+  app.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => {
+    const el = document.getElementById(b.dataset.go);
+    if (el) el.scrollIntoView({ block: "start" });
+  }));
+  window.scrollTo(0, 0);
 }
 
 function route() {
   const h = location.hash.replace(/^#/, "");
-  let m;
-  if ((m = h.match(/^plan-([23])-(\d+)$/))) detail(m[1], +m[2]);
-  else if ((m = h.match(/^plan-([23])$/))) overview(m[1]);
-  else home();
-  window.scrollTo(0, 0);
+  const m = h.match(/^plan-([12])(?:-\d+)?$/);   // 예전 상세 주소(#plan-2-5)도 시안 페이지로
+  if (m) planPage(m[1]); else home();
 }
 window.addEventListener("hashchange", route);
-document.addEventListener("keydown", e => {
-  const m = location.hash.match(/^#plan-([23])-(\d+)$/);
-  if (!m || e.target.closest("input,textarea")) return;
-  const n = +m[2];
-  if (e.key === "ArrowRight" && n < STEPS.length) location.hash = `plan-${m[1]}-${n + 1}`;
-  if (e.key === "ArrowLeft" && n > 1) location.hash = `plan-${m[1]}-${n - 1}`;
-});
 route();
 </script>
 </body>
