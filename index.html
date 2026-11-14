@@ -54,7 +54,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;text-decoration:none;transition:border-color .15s}
 .card:hover{border-color:var(--muted)}
 .card img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;background:var(--stage)}
-.fronts{display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,2.5vw,24px);background:var(--stage);padding:clamp(14px,3vw,28px) clamp(18px,5vw,56px);border-top:1px solid var(--line)}
+.fronts{display:grid;grid-template-columns:1fr 1fr;gap:clamp(10px,2.5vw,24px);background:var(--stage);padding:clamp(14px,3vw,28px) clamp(18px,5vw,56px)}
 .fronts figure{margin:0;display:flex;flex-direction:column;align-items:center;gap:8px;min-width:0}
 .fronts img{width:100%;aspect-ratio:176/250;object-fit:cover;box-shadow:0 2px 8px rgba(0,0,0,.2)}
 .fronts figcaption{font-size:12px;color:var(--muted)}
@@ -185,7 +185,6 @@ function home() {
   setTabs(null);
   const cards = ORDER.map(k => { const p = PLANS[k]; return `
     <a class="card" href="#plan-${k}">
-      <img src="${IMG(`p${k}_mockup.jpg`)}" alt="${p.name} 결핵연보·감시연보 목업">
       <div class="fronts">
         <figure><img src="${IMG(`p${k}_tb_front.jpg`)}" alt="${p.name} 결핵연보 앞표지"><figcaption>결핵연보 앞표지</figcaption></figure>
         <figure><img src="${IMG(`p${k}_gs_front.jpg`)}" alt="${p.name} 감시연보 앞표지"><figcaption>감시연보 앞표지</figcaption></figure>
