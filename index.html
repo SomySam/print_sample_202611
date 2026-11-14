@@ -228,7 +228,7 @@ function planPage(k) {
     ${numbered.filter(o => o.bk === bk).map(o => `
       <section class="scene" id="s-${bk}-${o.s.id}">
         <div class="scene-head"><span class="n mono">${String(o.n).padStart(2, "0")} / ${numbered.length}</span><h2>${esc(o.s.title)}</h2><span class="tag">${BOOK[bk].name}</span></div>
-        <figure><img class="${o.s.wide ? "" : "page"}" src="${IMG(`p${k}_${bk}_${o.s.id}.jpg`)}" alt="${p.name} ${BOOK[bk].name} ${esc(o.s.title)}" loading="lazy"></figure>
+        <figure><img class="${o.s.wide ? "" : "page"}" src="${IMG(`p${k}_${bk}_${o.s.id}.jpg`)}" alt="${p.name} ${BOOK[bk].name} ${esc(o.s.title)}"></figure>
         <ul class="points">${o.s.points[bk].map(t => `<li>${esc(t)}</li>`).join("")}</ul>
       </section>`).join("")}`).join("");
   const colorRow = (label, key) => `<span class="h">${label}</span>
