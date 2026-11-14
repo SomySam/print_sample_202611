@@ -83,6 +83,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 
 .toc{margin-top:28px;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
 .toc .grp{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;min-width:0}
+.toc .grp.mock{grid-column:1 / -1;padding-block:6px}
 .toc h3{font-size:14px;font-weight:700;margin-bottom:6px}
 .toc ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
 .toc button{display:flex;gap:10px;width:100%;text-align:left;background:none;border:0;border-top:1px solid var(--line);padding:8px 2px;cursor:pointer;font-size:14px}
@@ -221,10 +222,17 @@ function planPage(k) {
   document.title = `${p.name} ${p.title} · 시안 검토`;
   setTabs(k);
   const nextK = ORDER[ORDER.indexOf(k) + 1];
-  let n = 0;
+  let n = 1;   // 01 = 목업
   const numbered = [];
   ["tb", "gs"].forEach(bk => SCENES.forEach(s => numbered.push({ bk, s, n: ++n })));
-  const toc = ["tb", "gs"].map(bk => `
+  const total = numbered.length + 1;
+  const mockScene = `
+    <section class="scene" id="s-mockup">
+      <div class="scene-head"><span class="n mono">01 / ${total}</span><h2>목업</h2><span class="tag">결핵연보 · 감시연보</span></div>
+      <figure><img src="${IMG(`p${k}_mockup.jpg`)}" alt="${p.name} 결핵연보·감시연보 목업"></figure>
+      <ul class="points"><li>두 권을 나란히 놓았을 때 시리즈로 보이는지</li><li>실물 비율(176×250mm, 책등 1cm 미만)에서의 인상</li></ul>
+    </section>`;
+  const toc = `<div class="grp mock"><ol><li><button type="button" data-go="s-mockup"><span class="n mono">01</span>목업 · 두 권 함께</button></li></ol></div>` + ["tb", "gs"].map(bk => `
     <div class="grp"><h3>${BOOK[bk].name}</h3><ol>
       ${numbered.filter(o => o.bk === bk).map(o => `<li><button type="button" data-go="s-${o.bk}-${o.s.id}"><span class="n mono">${String(o.n).padStart(2, "0")}</span>${esc(o.s.title)}</button></li>`).join("")}
     </ol></div>`).join("");
@@ -232,7 +240,7 @@ function planPage(k) {
     <div class="book-div"><h2>${BOOK[bk].name}</h2><span>${BOOK[bk].full}</span></div>
     ${numbered.filter(o => o.bk === bk).map(o => `
       <section class="scene" id="s-${bk}-${o.s.id}">
-        <div class="scene-head"><span class="n mono">${String(o.n).padStart(2, "0")} / ${numbered.length}</span><h2>${esc(o.s.title)}</h2><span class="tag">${BOOK[bk].name}</span></div>
+        <div class="scene-head"><span class="n mono">${String(o.n).padStart(2, "0")} / ${total}</span><h2>${esc(o.s.title)}</h2><span class="tag">${BOOK[bk].name}</span></div>
         <figure><img class="${o.s.wide ? "" : "page"}" src="${IMG(`p${k}_${bk}_${o.s.id}.jpg`)}" alt="${p.name} ${BOOK[bk].name} ${esc(o.s.title)}"></figure>
         <ul class="points">${o.s.points[bk].map(t => `<li>${esc(t)}</li>`).join("")}</ul>
       </section>`).join("")}`).join("");
@@ -264,6 +272,7 @@ function planPage(k) {
       </div>
       <nav class="toc" aria-label="${p.name} 목차">${toc}</nav>
     </section>
+    ${mockScene}
     ${scenes}
     <div class="end">
       <a class="btn" href="#home">← 시안 목록</a>
