@@ -70,7 +70,14 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 /* 시안 페이지 */
 .plan-head{padding-block:8px 24px;border-bottom:1px solid var(--line)}
 .plan-head h1{font-family:var(--f-display);font-size:clamp(26px,3.6vw,38px);font-weight:800;line-height:1.25;margin-top:4px}
-.plan-head p{color:var(--muted);margin:10px 0 0;max-width:70ch}
+.plan-head > p{color:var(--muted);margin:10px 0 0;max-width:70ch}
+.tagline{font-family:var(--f-display);font-weight:700;font-size:16px;color:var(--fg)}
+.tagline.lg{font-size:clamp(18px,2.2vw,22px);margin-top:8px}
+.meaning{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 32px;margin-top:22px}
+.meaning .m{border-top:2px solid var(--fg);padding-top:10px;min-width:0}
+.meaning h3{font-size:15px;font-weight:700;margin-bottom:4px}
+.meaning p{margin:0;font-size:14px;color:var(--muted)}
+@media (max-width:860px){.meaning{grid-template-columns:1fr}}
 .sys{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:24px}
 .panel{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px 18px;min-width:0}
 .panel h3{font-size:13px;letter-spacing:.08em;color:var(--muted);font-weight:700;margin-bottom:10px}
@@ -130,7 +137,14 @@ const IMG = n => "img/" + n;
 const PLANS = {
   "1": {
     name: "1안", title: "기하 구성",
-    concept: "원·동심원·눈금·점 격자로 '측정하고 기록하는' 인상을 만든 안입니다. 강한 색은 핵심 원 하나에만 쓰고, 그래픽은 판형 밖으로 넘어가며 뒤표지까지 하나로 이어집니다.",
+    tagline: "숫자를 정확히 재고, 빠짐없이 기록한다",
+    concept: "연보의 본질인 '측정과 기록'을 원·눈금·격자로 옮긴 안입니다. 표지의 세로선 10개는 2016–2025년 전국 결핵 신환자율 실제 값으로, 10년간의 감소 추세를 그대로 그렸습니다. 강한 색은 핵심 원 하나에만 써서, 많은 통계 속에서도 올해의 결과에 시선이 모이게 했습니다.",
+    meaning: [
+      ["원과 동심원", "감시의 대상인 지역사회와 그 범위를 뜻합니다. 바깥으로 퍼지는 동심원은 관찰 범위가 넓어지는 감시망을, 52주·12개월 눈금은 연보가 한 해를 주 단위로 빠짐없이 기록한다는 것을 나타냅니다."],
+      ["실제 데이터로 그린 선", "결핵연보 표지의 세로선 10개는 2016년부터 2025년까지 전국 결핵 신환자율을 길이로 옮긴 것입니다. 선이 점점 짧아지는 흐름이 그대로 10년간의 감소를 보여 주고, 2025년 한 줄만 강조색으로 표시했습니다."],
+      ["점 격자", "신고 한 건 한 건이 모여 통계가 된다는 뜻입니다. 일정한 간격의 점은 표와 그래프가 대부분인 연보의 정밀한 성격을 시각적으로 예고합니다."],
+      ["절제된 색", "강한 색은 핵심 원 하나, 보조색은 가는 선과 작은 원에만 씁니다. 공공기관 보고서에 필요한 신뢰감을 유지하면서, 해마다 연도와 수치만 바꿔 같은 형식으로 이어 갈 수 있는 체계입니다."]
+    ],
     books: {
       tb: { key: "#EC5A3E", acc: "#1B2A4A", bg: "#EEEDE9", keyName: "코럴" },
       gs: { key: "#1F6AB0", acc: "#17402F", bg: "#EEEDE9", keyName: "블루" }
@@ -138,7 +152,14 @@ const PLANS = {
   },
   "2": {
     name: "2안", title: "데이터 흐름",
-    concept: "여러 겹의 그라데이션 리본으로 해마다 이어지는 데이터의 흐름을 표현한 안입니다. 리본 결을 따라 가는 선을 겹쳐 정교함을 더했고, 두 권은 같은 구성에 배색만 다릅니다.",
+    tagline: "해마다 쌓인 기록이 올해의 결과로 흐른다",
+    concept: "신고 자료가 해마다 이어져 하나의 흐름을 이루는 모습을 리본으로 표현한 안입니다. 뒤표지에서 시작한 흐름이 책등을 지나 앞표지 위로 올라가, 지난 기록이 올해의 연보로 이어진다는 이야기를 책 한 권에 담았습니다. 밝은 배색으로 시민과 실무자 모두 먼저 펼쳐 보고 싶은 연보를 목표로 했습니다.",
+    meaning: [
+      ["이어지는 리본", "연도별 신고 자료가 끊기지 않고 이어지는 시간의 흐름입니다. 뒤표지 아래에서 시작해 앞표지 위로 오르는 방향은 과거의 기록이 올해의 결과로 연결되는 연보의 구조와 같습니다."],
+      ["여러 겹의 층", "성별·연령·지역·신고기관처럼 연보가 다루는 여러 층위의 자료가 함께 흐르는 모습입니다. 겹이 겹쳐지는 부분은 자료가 서로 맞물려 하나의 해석을 이룬다는 뜻을 담았습니다."],
+      ["가는 선과 작은 원", "리본 결을 따라가는 가는 선은 세밀한 분석을, 흐름 위의 작은 원은 개별 신고 사례를 뜻합니다. 큰 흐름 속에서도 한 건 한 건을 놓치지 않는다는 감시의 태도를 표현했습니다."],
+      ["같은 구성, 다른 온도", "결핵연보는 따뜻한 색, 감시연보는 차가운 색으로 배색만 바꿨습니다. 두 권이 한 시리즈로 보이면서도 책장에서 바로 구분되고, 이후 다른 연보에도 같은 방식으로 넓힐 수 있습니다."]
+    ],
     books: {
       tb: { key: "#E8365D", acc: "#1B2A4A", bg: "#FFF7F3", keyName: "핑크레드" },
       gs: { key: "#2F6BFF", acc: "#17402F", bg: "#F3F8FC", keyName: "블루" }
@@ -190,6 +211,7 @@ function home() {
       </div>
       <div class="body">
         <h2>${p.name}<small>${esc(p.title)}</small></h2>
+        <div class="tagline">${esc(p.tagline)}</div>
         <p>${esc(p.concept)}</p>
         <div class="chips">
           ${chip(p.books.tb.key, "결핵 강조 " + p.books.tb.keyName)}${chip(p.books.gs.key, "감시 강조 " + p.books.gs.keyName)}
@@ -251,7 +273,9 @@ function planPage(k) {
     <section class="plan-head">
       <div class="eyebrow">${p.name}</div>
       <h1>${esc(p.title)}</h1>
+      <div class="tagline lg">${esc(p.tagline)}</div>
       <p>${esc(p.concept)}</p>
+      <div class="meaning" aria-label="디자인 의미">${p.meaning.map(([h, t]) => `<div class="m"><h3>${esc(h)}</h3><p>${esc(t)}</p></div>`).join("")}</div>
       <div class="sys" aria-label="디자인 시스템 요약">
         <div class="panel"><h3>서체</h3>
           <div class="type-row"><b>제목·중제목</b><span>에스코어 드림 500–700</span></div>
