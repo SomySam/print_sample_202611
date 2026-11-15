@@ -50,7 +50,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .intro p{color:var(--muted);margin:10px 0 0;max-width:60ch}
 .spec{display:grid;grid-template-columns:auto 1fr;gap:6px 16px;font-size:13.5px;margin:0}
 .spec dt{color:var(--muted)} .spec dd{margin:0}
-.plans{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:24px;margin-top:28px}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:28px}
+@media (max-width:1180px){.plans{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .card{display:flex;flex-direction:column;background:var(--surface);border:1px solid var(--line);border-radius:10px;overflow:hidden;text-decoration:none;transition:border-color .15s}
 .card:hover{border-color:var(--muted)}
 .card img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover;background:var(--stage)}
@@ -127,6 +128,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
     <nav class="tabs" aria-label="시안">
       <a href="#plan-1" data-plan="1">1안 기하 구성</a>
       <a href="#plan-2" data-plan="2">2안 데이터 흐름</a>
+      <a href="#plan-3" data-plan="3">3안 연결 네트워크</a>
     </nav>
   </div>
 </header>
@@ -164,9 +166,24 @@ const PLANS = {
       tb: { key: "#E8365D", acc: "#1B2A4A", bg: "#FFF7F3", keyName: "핑크레드" },
       gs: { key: "#2F6BFF", acc: "#17402F", bg: "#F3F8FC", keyName: "블루" }
     }
+  },
+  "3": {
+    name: "3안", title: "연결 네트워크",
+    tagline: "흩어진 신고가 이어져 하나의 감시망이 된다",
+    concept: "지역 곳곳의 신고 한 건 한 건을 원으로, 그 신고를 잇는 보고·역학조사·관리 체계를 부드러운 연결로 그린 안입니다. 원과 연결이 녹아 하나로 이어지는 모습은, 개별 사례가 모여 대전시 전체의 감염병 관리망을 이룬다는 뜻입니다. 원 안의 흰 선 아이콘은 전년도 표지의 의료 아이콘을 이어받아, 무엇을 감시하는 책인지 한눈에 알려 줍니다.",
+    meaning: [
+      ["원과 연결", "원은 신고된 사례와 의료기관·보건소 같은 현장을, 부드러운 연결은 그 사이를 오가는 신고·보고 체계를 뜻합니다. 끊김 없이 녹아 이어진 형태로 '빠짐없이 연결된 감시'를 표현했습니다."],
+      ["원 안의 흰 선 아이콘", "폐·현미경·DNA·세균·바이러스·주사기 같은 의료 아이콘을 흰 가는 선으로 작게 넣었습니다. 그래픽을 해치지 않으면서 결핵·감염병이라는 주제를 바로 읽히게 합니다."],
+      ["두 권, 다른 패턴", "결핵연보는 한 줄로 길게 이어지는 '사슬'로, 오랜 기간 추적·관리하는 결핵의 특성을 담았습니다. 감시연보는 고리가 섞인 '그물'로, 여러 감염병을 동시에 살피는 감시망을 표현했습니다."],
+      ["2색 이상의 그라데이션", "결핵연보는 주황·코랄·핑크·보라의 따뜻한 배색, 감시연보는 청록·하늘·파랑·남보라의 차가운 배색에 각각 다른 계열의 작은 덩어리(노랑, 연두)를 더했습니다. 보조색은 작은 원에만 씁니다."]
+    ],
+    books: {
+      tb: { key: "#EF476F", acc: "#1B2A4A", bg: "#FFFFFF", keyName: "핑크" },
+      gs: { key: "#3A86FF", acc: "#17402F", bg: "#FFFFFF", keyName: "블루" }
+    }
   }
 };
-const ORDER = ["1", "2"];
+const ORDER = ["1", "2", "3"];
 const BOOK = {
   tb: { name: "결핵연보", full: "2025 대전광역시 결핵환자 신고현황 연보" },
   gs: { name: "감시연보", full: "2025 대전광역시 감염병 감시연보" }
@@ -311,7 +328,7 @@ function planPage(k) {
 
 function route() {
   const h = location.hash.replace(/^#/, "");
-  const m = h.match(/^plan-([12])(?:-\d+)?$/);   // 예전 상세 주소(#plan-2-5)도 시안 페이지로
+  const m = h.match(/^plan-([123])(?:-\d+)?$/);   // 예전 상세 주소(#plan-2-5)도 시안 페이지로
   if (m) planPage(m[1]); else home();
 }
 window.addEventListener("hashchange", route);
