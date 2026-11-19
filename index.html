@@ -76,6 +76,39 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 @media (max-width:860px){.card.rev{grid-template-columns:1fr}}
 .rev-row + .plans{margin-top:24px}
 
+/* 메인: 왼쪽 시안 목록 + 오른쪽 진행 상황 */
+.home-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;grid-template-areas:"main side";gap:32px;align-items:start}
+.home-main{grid-area:main;min-width:0}
+.home-main .intro{grid-template-columns:1fr}
+.home-main .plans{grid-template-columns:repeat(2,minmax(0,1fr))}
+.progress{grid-area:side;position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--head-h) + 16px);margin-top:12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:18px 18px 8px}
+.progress h2{font-size:16px;font-weight:700}
+.progress .sum{margin:6px 0 0;font-size:13px;color:var(--muted)}
+.progress .sum b{color:var(--fg)}
+.bar{height:6px;border-radius:999px;background:var(--stage);margin:12px 0 16px;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--accent);border-radius:999px}
+.steps{list-style:none;margin:0;padding:0}
+.step{position:relative;display:grid;grid-template-columns:22px minmax(0,1fr);gap:0 10px;padding-bottom:14px}
+.step::before{content:"";position:absolute;left:10px;top:20px;bottom:0;width:2px;background:var(--line)}
+.step:last-child::before{display:none}
+.step.done::before{background:var(--accent)}
+.dot{width:22px;height:22px;border-radius:50%;display:grid;place-items:center;font-size:11px;font-weight:700;border:2px solid var(--line);background:var(--surface);color:var(--muted);position:relative;z-index:1}
+.step.done .dot{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.step.now .dot{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 18%,transparent)}
+.step.wait .dot{border-style:dashed}
+.step h3{font-size:14px;font-weight:700;line-height:1.4;display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.step.todo h3,.step.wait h3{color:var(--muted);font-weight:500}
+.step p{margin:2px 0 0;font-size:12.5px;color:var(--muted);line-height:1.5}
+.state{font-size:11px;font-weight:700;border-radius:999px;padding:1px 8px;border:1px solid var(--line);color:var(--muted);white-space:nowrap}
+.step.done .state{border-color:transparent;background:var(--stage);color:var(--fg)}
+.step.now .state{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.progress .legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:11.5px;color:var(--muted);border-top:1px solid var(--line);padding:10px 0 8px;margin-top:2px}
+@media (max-width:1000px){
+  .home-grid{grid-template-columns:1fr;grid-template-areas:"side" "main";gap:20px}
+  .progress{position:static;margin-top:16px}
+}
+@media (max-width:640px){.home-main .plans{grid-template-columns:1fr}}
+
 /* 시안 페이지 */
 .plan-head{padding-block:8px 24px;border-bottom:1px solid var(--line)}
 .plan-head h1{font-family:var(--f-display);font-size:clamp(26px,3.6vw,38px);font-weight:800;line-height:1.25;margin-top:4px}
@@ -128,8 +161,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 @media (prefers-reduced-motion:reduce){*{transition:none!important} html{scroll-behavior:auto}}
 </style>
 
-</head>
-<body>
+</head><body>
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#home">2025 대전광역시 연보 시안</a>
@@ -145,7 +177,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 
 <script>
 // 이미지를 바꿔 올릴 때마다 IMG_V를 올리면 브라우저·CDN 캐시와 상관없이 새 이미지가 보임
-const IMG_V = "20261119-4";
+const IMG_V = "20261119-8";
 const IMG = n => "img/" + n + "?v=" + IMG_V;
 const PLANS = {
   "1": {
@@ -203,7 +235,7 @@ const REV = {
     ["감시 주색 파랑", "#3A6CB3"], ["감시 보조 노랑", "#E8B730"]
   ],
   scenes: {
-    tb: [["cover", "표지 펼침면"], ["sum", "요약 펼침"], ["toc", "목차 펼침"], ["div", "간지 펼침"], ["body", "본문 샘플"]],
+    tb: [["cover", "표지 펼침면"], ["cover_b", "표지 펼침면 (다른 배치)"], ["sum", "요약 펼침"], ["toc", "목차 펼침"], ["div", "간지 펼침"], ["body", "본문 샘플"]],
     gs: [["cover", "표지 펼침면"], ["toc", "목차 펼침"], ["div", "간지 펼침"], ["body", "본문 샘플"]]
   }
 };
@@ -240,6 +272,42 @@ function setTabs(k) {
   });
 }
 
+// 전체 진행 상황 — 단계가 바뀌면 이 목록의 state만 고친다. done 완료 · now 진행 중 · wait 회신 대기 · todo 예정
+const PROGRESS = {
+  updated: "2026-11-19",
+  steps: [
+    { state: "done", title: "기존 자료·원고 분석", date: "11.14", note: "2023·2024 연보, 결핵연보 원고 검토" },
+    { state: "done", title: "1차 시안 (1·2·3안)", date: "11.14–15", note: "표지·내지 디자인 시스템 3가지 방향" },
+    { state: "done", title: "결핵연보 수정 원고 검토", date: "11.18", note: "2차 원고 오류 목록 전달" },
+    { state: "done", title: "수정안 제작", date: "11.19", note: "이전 디자인 유지 + 컬러 변경, 공통 일러스트, 1안 서체 적용" },
+    { state: "now",  title: "수정안 컨펌", date: "진행 중", note: "표지 2가지 배치, 내지 샘플 확인" },
+    { state: "wait", title: "제공처 확인 사항 회신", date: "대기", note: "지도 5개 구 색상, 2025 신환자율(20.4 / 20.3)" },
+    { state: "wait", title: "최종 원고 수령", date: "대기", note: "결핵연보 최종 수정본, 감시연보 원고" },
+    { state: "todo", title: "본문 조판", date: "예정", note: "확정 디자인으로 전체 쪽 조판" },
+    { state: "todo", title: "교정 (1차·2차)", date: "예정", note: "제공처 교정 반영" },
+    { state: "todo", title: "인쇄용 PDF 납품", date: "예정", note: "PDF/X-1a:2001, CMYK" }
+  ]
+};
+const STATE_KO = { done: "완료", now: "진행 중", wait: "회신 대기", todo: "예정" };
+
+function progressPanel() {
+  const s = PROGRESS.steps, done = s.filter(x => x.state === "done").length, cur = s.find(x => x.state === "now");
+  const items = s.map((x, i) => `
+      <li class="step ${x.state}"${x.state === "now" ? ' aria-current="step"' : ""}>
+        <span class="dot" aria-hidden="true">${x.state === "done" ? "✓" : i + 1}</span>
+        <div><h3>${esc(x.title)}<span class="state">${x.state === "done" ? `<span class="mono">${esc(x.date)}</span>` : STATE_KO[x.state]}</span></h3>
+        <p>${esc(x.note)}</p></div>
+      </li>`).join("");
+  return `
+    <aside class="progress" aria-label="전체 진행 상황">
+      <h2>진행 상황</h2>
+      <p class="sum"><b class="mono">${s.length}</b>단계 중 <b class="mono">${done}</b>단계 완료${cur ? ` · 지금 <b>${esc(cur.title)}</b>` : ""}</p>
+      <div class="bar" role="img" aria-label="${s.length}단계 중 ${done}단계 완료"><i style="width:${Math.round(done / s.length * 100)}%"></i></div>
+      <ol class="steps">${items}</ol>
+      <div class="legend"><span>✓ 완료</span><span>● 진행 중</span><span>┆ 회신 대기</span><span>○ 예정</span><span class="mono">기준 ${PROGRESS.updated}</span></div>
+    </aside>`;
+}
+
 function home() {
   document.title = "2025 대전 연보 시안 검토";
   setTabs(null);
@@ -261,6 +329,9 @@ function home() {
       </div>
     </a>`; }).join("");
   app.innerHTML = `
+   <div class="home-grid">
+    ${progressPanel()}
+    <div class="home-main">
     <section class="intro">
       <div>
         <div class="eyebrow">Design review</div>
@@ -288,7 +359,9 @@ function home() {
         </div>
       </a>
     </section>
-    <section class="plans" aria-label="시안 목록">${cards}</section>`;
+    <section class="plans" aria-label="시안 목록">${cards}</section>
+    </div>
+   </div>`;
   window.scrollTo(0, 0);
 }
 
@@ -418,5 +491,4 @@ function route() {
 window.addEventListener("hashchange", route);
 route();
 </script>
-</body>
-</html>
+</body></html>
