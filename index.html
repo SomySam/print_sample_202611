@@ -148,6 +148,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .scene figure{margin:0;background:var(--stage);border-radius:10px;padding:clamp(10px,2.5vw,28px)}
 .scene img{display:block;width:100%;height:auto;box-shadow:0 2px 10px rgba(0,0,0,.18)}
 .scene img.page{max-width:620px;margin:0 auto}
+.scene img.sheet{max-width:960px;margin:0 auto}
+.toc .grp:nth-child(3):last-child{grid-column:1 / -1}
 .points{margin:12px 0 0;padding-left:18px;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:3px}
 .book-div{margin-top:56px;padding-top:20px;border-top:2px solid var(--fg);display:flex;align-items:baseline;gap:12px;flex-wrap:wrap}
 .book-div h2{font-family:var(--f-display);font-size:24px;font-weight:800}
@@ -177,7 +179,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 
 <script>
 // 이미지를 바꿔 올릴 때마다 IMG_V를 올리면 브라우저·CDN 캐시와 상관없이 새 이미지가 보임
-const IMG_V = "20261119-10";
+const IMG_V = "20261119-11";
 const IMG = n => "img/" + n + "?v=" + IMG_V;
 const PLANS = {
   "1": {
@@ -288,7 +290,8 @@ const PROGRESS = {
     { state: "todo", title: "인쇄용 PDF 납품", date: "예정", note: "PDF/X-1a:2001, CMYK" }
   ]
 };
-const STATE_KO = { done: "완료", now: "진행 중", wait: "회신 대기", todo: "예정" };
+const ICON_COUNT = 24;   // 공통 일러스트 수 (컬러변경시안/_src/common_icons.py ORDER)
+const STATE_KO ={ done: "완료", now: "진행 중", wait: "회신 대기", todo: "예정" };
 
 function progressPanel() {
   const s = PROGRESS.steps, done = s.filter(x => x.state === "done").length, cur = s.find(x => x.state === "now");
@@ -375,7 +378,19 @@ function revPage() {
   const toc = ["tb", "gs"].map(bk => `
     <div class="grp"><h3>${BOOK[bk].name}</h3><ol>
       ${list.filter(o => o.bk === bk).map(o => `<li><button type="button" data-go="s-r-${o.bk}-${o.id}"><span class="n mono">${num(o.n)}</span>${esc(o.title)}</button></li>`).join("")}
-    </ol></div>`).join("");
+    </ol></div>`).join("") + `
+    <div class="grp"><h3>공통</h3><ol>
+      <li><button type="button" data-go="s-r-icons"><span class="n mono">${num(total + 1)}</span>공통 일러스트 ${ICON_COUNT}종 전체 보기</button></li>
+    </ol></div>`;
+  const icons = `
+    <div class="book-div"><h2>공통 일러스트</h2><span>결핵연보·감염병 감시연보에 함께 쓰는 일러스트 ${ICON_COUNT}종</span></div>
+    <section class="scene" id="s-r-icons">
+      <div class="scene-head"><span class="n mono">${num(total + 1)} / ${total + 1}</span><h2>공통 일러스트 전체 보기</h2><span class="tag">결핵연보 · 감시연보</span></div>
+      <figure><img class="sheet" src="${IMG("r_icons.png")}" alt="공통 일러스트 ${ICON_COUNT}종 — 결핵연보 색과 감시연보 색"></figure>
+      <ul class="points"><li>같은 굵기의 선으로 그리고, 핵심 한 곳에만 포인트 색을 채운 스타일</li>
+        <li>위: 결핵연보 색(바이올렛·머스타드) / 아래: 감시연보 색(파랑·노랑) — 같은 그림을 책마다 색만 바꿔 씀</li>
+        <li>표지·간지에 쓰였고, 내지 편집 요소로도 활용 예정</li></ul>
+    </section>`;
   const scenes = ["tb", "gs"].map(bk => `
     <div class="book-div"><h2>${BOOK[bk].name}</h2><span>${BOOK[bk].full}</span></div>
     ${list.filter(o => o.bk === bk).map(o => `
@@ -402,6 +417,7 @@ function revPage() {
       <nav class="toc" aria-label="${REV.name} 목차">${toc}</nav>
     </section>
     ${scenes}
+    ${icons}
     <div class="end">
       <a class="btn" href="#home">← 시안 목록</a>
       <a class="btn primary" href="#plan-1">다음: ${PLANS["1"].name} ${esc(PLANS["1"].title)} →</a>
