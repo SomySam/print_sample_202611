@@ -5,6 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <style>:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>2025 대전 연보 시안 검토</title>
+<meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700;800&family=Noto+Sans+KR:wght@400;500;700&display=swap">
@@ -67,6 +68,13 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .chip{display:inline-flex;align-items:center;gap:6px}
 .chip i{width:14px;height:14px;border-radius:50%;display:inline-block;border:1px solid rgba(0,0,0,.12)}
 .card .go{margin-top:4px;font-weight:700;font-size:14px}
+/* 수정안 행: 1·2·3안 위 한 행, 표지 + 이름·색상만 */
+.rev-row{margin-top:28px}
+.card.rev{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr)}
+.card.rev .fronts{height:100%}
+.card.rev .body{justify-content:center}
+@media (max-width:860px){.card.rev{grid-template-columns:1fr}}
+.rev-row + .plans{margin-top:24px}
 
 /* 시안 페이지 */
 .plan-head{padding-block:8px 24px;border-bottom:1px solid var(--line)}
@@ -119,13 +127,14 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important} html{scroll-behavior:auto}}
 </style>
+
 </head>
 <body>
-
 <header class="top">
   <div class="wrap">
     <a class="brand" href="#home">2025 대전광역시 연보 시안</a>
     <nav class="tabs" aria-label="시안">
+      <a href="#plan-r" data-plan="r">수정안</a>
       <a href="#plan-1" data-plan="1">1안 기하 구성</a>
       <a href="#plan-2" data-plan="2">2안 데이터 흐름</a>
       <a href="#plan-3" data-plan="3">3안 연결 네트워크</a>
@@ -184,6 +193,18 @@ const PLANS = {
   }
 };
 const ORDER = ["1", "2", "3"];
+// 수정안: 이전(2024) 디자인 그대로, 기존에 쓰지 않은 색만 적용 — 컨셉 설명 없음
+const REV = {
+  name: "수정안",
+  colors: [
+    ["결핵 주색 바이올렛", "#6A3FB5"], ["결핵 보조 머스타드", "#E0A526"],
+    ["감시 주색 골드 앰버", "#D99208"], ["감시 강조 차콜", "#3F3B38"]
+  ],
+  scenes: {
+    tb: [["cover", "표지 펼침면"], ["sum", "요약 펼침"], ["toc", "목차 펼침"], ["div", "간지 펼침"], ["body", "본문 샘플"]],
+    gs: [["cover", "표지 (뒤표지 · 앞표지)"], ["toc", "목차 펼침"], ["div", "간지 펼침"], ["body", "본문 샘플"]]
+  }
+};
 const BOOK = {
   tb: { name: "결핵연보", full: "2025 대전광역시 결핵환자 신고현황 연보" },
   gs: { name: "감시연보", full: "2025 대전광역시 감염병 감시연보" }
@@ -252,7 +273,68 @@ function home() {
         <dt>상태</dt><dd>결핵연보 원고 반영 / 감시연보는 원고 수령 전 가안</dd>
       </dl>
     </section>
+    <section class="rev-row" aria-label="수정안">
+      <a class="card rev" href="#plan-r">
+        <div class="fronts">
+          <figure><img src="${IMG("r_tb_front.jpg")}" alt="수정안 결핵연보 앞표지"><figcaption>결핵연보 앞표지</figcaption></figure>
+          <figure><img src="${IMG("r_gs_front.jpg")}" alt="수정안 감시연보 앞표지"><figcaption>감시연보 앞표지</figcaption></figure>
+        </div>
+        <div class="body">
+          <h2>${REV.name}</h2>
+          <div class="chips">${REV.colors.map(([l, c]) => chip(c, l)).join("")}</div>
+          <span class="go">${REV.name} 검토하기 →</span>
+        </div>
+      </a>
+    </section>
     <section class="plans" aria-label="시안 목록">${cards}</section>`;
+  window.scrollTo(0, 0);
+}
+
+function revPage() {
+  document.title = `${REV.name} · 시안 검토`;
+  setTabs("r");
+  const list = [];
+  ["tb", "gs"].forEach(bk => REV.scenes[bk].forEach(([id, title]) => list.push({ bk, id, title, n: list.length + 1 })));
+  const total = list.length;
+  const num = n => String(n).padStart(2, "0");
+  const toc = ["tb", "gs"].map(bk => `
+    <div class="grp"><h3>${BOOK[bk].name}</h3><ol>
+      ${list.filter(o => o.bk === bk).map(o => `<li><button type="button" data-go="s-r-${o.bk}-${o.id}"><span class="n mono">${num(o.n)}</span>${esc(o.title)}</button></li>`).join("")}
+    </ol></div>`).join("");
+  const scenes = ["tb", "gs"].map(bk => `
+    <div class="book-div"><h2>${BOOK[bk].name}</h2><span>${BOOK[bk].full}</span></div>
+    ${list.filter(o => o.bk === bk).map(o => `
+      <section class="scene" id="s-r-${bk}-${o.id}">
+        <div class="scene-head"><span class="n mono">${num(o.n)} / ${total}</span><h2>${esc(o.title)}</h2><span class="tag">${BOOK[bk].name}</span></div>
+        <figure><img src="${IMG(`r_${bk}_${o.id}.jpg`)}" alt="${REV.name} ${BOOK[bk].name} ${esc(o.title)}"></figure>
+      </section>`).join("")}`).join("");
+  app.innerHTML = `
+    <section class="plan-head">
+      <div class="eyebrow">Revision</div>
+      <h1>${REV.name}</h1>
+      <div class="sys" aria-label="색상">
+        <div class="panel"><h3>색상</h3>
+          <div class="colors"><span></span><span class="h">결핵연보</span><span class="h">감시연보</span>
+            <span class="h">주색</span>
+            <span class="sw"><i style="background:${REV.colors[0][1]}"></i><span class="mono">${REV.colors[0][1]}</span></span>
+            <span class="sw"><i style="background:${REV.colors[2][1]}"></i><span class="mono">${REV.colors[2][1]}</span></span>
+            <span class="h">보조·강조</span>
+            <span class="sw"><i style="background:${REV.colors[1][1]}"></i><span class="mono">${REV.colors[1][1]}</span></span>
+            <span class="sw"><i style="background:${REV.colors[3][1]}"></i><span class="mono">${REV.colors[3][1]}</span></span>
+          </div>
+        </div>
+      </div>
+      <nav class="toc" aria-label="${REV.name} 목차">${toc}</nav>
+    </section>
+    ${scenes}
+    <div class="end">
+      <a class="btn" href="#home">← 시안 목록</a>
+      <a class="btn primary" href="#plan-1">다음: ${PLANS["1"].name} ${esc(PLANS["1"].title)} →</a>
+    </div>`;
+  app.querySelectorAll("[data-go]").forEach(b => b.addEventListener("click", () => {
+    const el = document.getElementById(b.dataset.go);
+    if (el) el.scrollIntoView({ block: "start" });
+  }));
   window.scrollTo(0, 0);
 }
 
@@ -329,7 +411,7 @@ function planPage(k) {
 function route() {
   const h = location.hash.replace(/^#/, "");
   const m = h.match(/^plan-([123])(?:-\d+)?$/);   // 예전 상세 주소(#plan-2-5)도 시안 페이지로
-  if (m) planPage(m[1]); else home();
+  if (h === "plan-r") revPage(); else if (m) planPage(m[1]); else home();
 }
 window.addEventListener("hashchange", route);
 route();
