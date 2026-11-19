@@ -108,6 +108,8 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   .progress{position:static;margin-top:16px}
 }
 @media (max-width:640px){.home-main .plans{grid-template-columns:1fr}}
+/* 홈 외 페이지도 오른쪽에 진행 상황 — 좁은 화면에서는 본문 아래로 */
+@media (max-width:1000px){.page-grid{grid-template-areas:"main" "side"}}
 
 /* 시안 페이지 */
 .plan-head{padding-block:8px 24px;border-bottom:1px solid var(--line)}
@@ -691,6 +693,19 @@ function route() {
   const m = h.match(/^plan-([123])(?:-\d+)?$/);   // 예전 상세 주소(#plan-2-5)도 시안 페이지로
   // 주소만으로 들어오면(해시 없음) 최종원고 교정교열 화면을 먼저 보여 줌 — 홈은 #home
   if (h === "plan-r") revPage(); else if (h === "proof" || h === "") proofPage(); else if (m) planPage(m[1]); else home();
+  withProgress();
+}
+// 모든 페이지에 진행 상황 패널을 붙임(홈은 이미 있음). 노드를 옮겨 담아 각 페이지의 이벤트는 그대로 유지
+function withProgress() {
+  if (app.querySelector(".progress")) return;
+  const grid = document.createElement("div");
+  grid.className = "home-grid page-grid";
+  grid.insertAdjacentHTML("beforeend", progressPanel());
+  const main = document.createElement("div");
+  main.className = "home-main";
+  while (app.firstChild) main.appendChild(app.firstChild);
+  grid.appendChild(main);
+  app.appendChild(grid);
 }
 window.addEventListener("hashchange", route);
 route();
