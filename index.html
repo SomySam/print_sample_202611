@@ -208,6 +208,10 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .names{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:6px 12px;margin:10px 0 2px;font-size:13.5px;align-items:center}
 .names .a{color:var(--muted)} .names .to{color:var(--muted)} .names .b{font-weight:700}
 @media (max-width:640px){.names{grid-template-columns:1fr}.names .to{display:none}.names .b{margin-bottom:8px}}
+.pf-fig{margin:14px 0 0;background:var(--stage);border-radius:10px;padding:clamp(10px,3vw,24px);text-align:center}
+.pf-fig img{max-width:min(100%,560px);height:auto;box-shadow:0 2px 10px rgba(0,0,0,.12);background:#fff}
+.pf-fig figcaption{font-size:12.5px;color:var(--muted);margin-top:8px}
+.chk .points{margin:6px 0 0}
 .kakao{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-weight:700}
 </style>
 
@@ -228,7 +232,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 
 <script>
 // 이미지를 바꿔 올릴 때마다 IMG_V를 올리면 브라우저·CDN 캐시와 상관없이 새 이미지가 보임
-const IMG_V = "20261119-15";
+const IMG_V = "20261119-16";
 const IMG = n => "img/" + n + "?v=" + IMG_V;
 const PLANS = {
   "1": {
@@ -619,7 +623,7 @@ function proofPage() {
       <span class="dl">내려받기 ↓</span></a>`).join("");
   const names = PROOF.files.filter(f => f.reply).map(f => `
       <span class="a">${esc(f.name)}</span><span class="to">→</span><span class="b">${esc(f.reply)}</span>`).join("");
-  const total = PROOF.tb.length + PROOF.gs.length + 1;
+  const total = PROOF.tb.length + PROOF.gs.length + 2;   // + 담당자 확인 1 + 전송 1
   app.innerHTML = `
     <section class="plan-head">
       <div class="eyebrow">Final manuscript · Proofreading</div>
@@ -657,7 +661,26 @@ function proofPage() {
     </section>
 
     <section class="pf-step" id="pf-5">
-      <h2><span class="n">5단계</span>2차 최종원고로 저장해 카카오톡으로 보내기</h2>
+      <h2><span class="n">5단계</span>담당자 확인 사항</h2>
+      <p class="lead">교정 내용과 별도로, 편집을 진행하기 전에 담당자님께서 정해 주셔야 할 사항입니다.</p>
+      <ol class="checks">
+        <li class="chk${st.mgr0 ? " done" : ""}" data-id="mgr0">
+          <input type="checkbox" id="c-mgr0" ${st.mgr0 ? "checked" : ""} aria-label="결핵연보 자치구별 지도 시안 확인 완료">
+          <label for="c-mgr0"><h3><span class="k mono">1</span>결핵연보 자치구별 지도(그림 13·14) 색 시안</h3>
+            <p>구별 색을 아직 받지 못해 아래 방식으로 먼저 시안을 만들었습니다. 이대로 진행해도 될지 알려 주세요.</p>
+            <ul class="points">
+              <li>값이 가장 큰 구 1곳만 포인트 색(머스타드)으로 칠했습니다.</li>
+              <li>나머지 4개 구는 값이 클수록 짙은 보라색으로, 명도를 4단계로 나눠 칠했습니다.</li>
+              <li>그림 13(환자 수)과 그림 14(신환자 수) 모두 서구가 가장 많아 서구가 포인트 색입니다. 표지 지도는 신환자율 기준이라 동구가 가장 짙습니다.</li>
+            </ul>
+            <div class="where"><span>결핵연보 그림 13·14</span><span>회신: 카카오톡으로 '지도 시안 진행' 또는 수정 의견</span></div></label>
+        </li>
+      </ol>
+      <figure class="pf-fig"><img src="${IMG("r_tb_map.png")}" alt="결핵연보 그림 13·14 자치구별 지도 시안 — 서구는 머스타드, 나머지 구는 보라색 명도 단계" loading="lazy"><figcaption>시안: 결핵연보 그림 13·14 (교정본 수치 기준)</figcaption></figure>
+    </section>
+
+    <section class="pf-step" id="pf-6">
+      <h2><span class="n">6단계</span>2차 최종원고로 저장해 카카오톡으로 보내기</h2>
       <div class="send"><ol>
         <li>값을 고칠 곳은 <b>교정본 파일에서 직접</b> 고쳐 주세요. 고친 칸의 빨간 표시는 그대로 두셔도 됩니다.</li>
         <li><b>'교정교열_변경이력_확인요청.xlsx'</b>의 '확인 요청' 시트 노란 <b>'제공처 회신'</b> 칸에 항목마다 답을 적어 주세요. (예: 맞음 / 수정함 — 29.1 / 결핵 포함 기준으로 통일)</li>
