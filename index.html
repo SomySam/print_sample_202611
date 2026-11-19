@@ -161,6 +161,52 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
   .plans,.sys,.toc{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important} html{scroll-behavior:auto}}
+
+/* 상단 메뉴가 좁은 화면에서 넘치지 않게 */
+.tabs{max-width:100%;overflow-x:auto;scrollbar-width:none}
+.tabs::-webkit-scrollbar{display:none}
+.tabs a{white-space:nowrap}
+.tabs a[data-plan="proof"]{color:var(--fg);font-weight:700}
+
+/* 최종원고 교정교열 */
+.pf-sum{display:flex;flex-wrap:wrap;gap:8px 20px;margin-top:14px;font-size:14px;color:var(--muted)}
+.pf-sum b{color:var(--fg);font-size:18px;margin-right:2px}
+.pf-meter{margin-top:18px;max-width:520px}
+.pf-meter p{margin:0;font-size:13px;color:var(--muted)}
+.pf-step{margin-top:44px}
+.pf-step > h2{display:flex;align-items:baseline;gap:12px;font-family:var(--f-display);font-size:24px;font-weight:800;padding-top:18px;border-top:2px solid var(--fg)}
+.pf-step > h2 .n{font-family:var(--f-ui);font-size:13px;font-weight:700;color:var(--accent-fg);background:var(--accent);border-radius:999px;padding:2px 10px;letter-spacing:.04em}
+.pf-step > p.lead{margin:10px 0 0;color:var(--muted);max-width:75ch}
+.files{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;margin-top:16px}
+.file{display:flex;flex-direction:column;gap:6px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:16px;text-decoration:none}
+.file:hover{border-color:var(--muted)}
+.file .ext{align-self:flex-start;font-size:11px;font-weight:700;letter-spacing:.06em;border:1px solid var(--line);border-radius:4px;padding:1px 6px;color:var(--muted)}
+.file strong{font-size:15px;line-height:1.4}
+.file span.d{font-size:13px;color:var(--muted)}
+.file .dl{margin-top:auto;padding-top:6px;font-size:13px;font-weight:700}
+.howto{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin-top:16px}
+.howto div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px;font-size:14px}
+.howto h3{font-size:14px;margin-bottom:4px}
+.howto p{margin:0;color:var(--muted)}
+.redbold{color:#D00000;font-weight:800}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]) .redbold{color:#FF6B6B}}
+:root[data-theme="dark"] .redbold{color:#FF6B6B}
+.checks{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.chk{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.chk input{width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent);cursor:pointer}
+.chk h3{font-size:15px;line-height:1.45}
+.chk h3 .k{color:var(--muted);font-weight:500;margin-right:6px}
+.chk p{margin:4px 0 0;font-size:14px;color:var(--muted)}
+.chk .where{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.chk .where span{font-size:12px;border:1px solid var(--line);border-radius:4px;padding:1px 7px;color:var(--muted)}
+.chk.done{opacity:.55}
+.chk.done h3{text-decoration:line-through}
+.send{background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:10px;padding:18px 20px;margin-top:16px}
+.send ol{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px}
+.names{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:6px 12px;margin:10px 0 2px;font-size:13.5px;align-items:center}
+.names .a{color:var(--muted)} .names .to{color:var(--muted)} .names .b{font-weight:700}
+@media (max-width:640px){.names{grid-template-columns:1fr}.names .to{display:none}.names .b{margin-bottom:8px}}
+.kakao{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-weight:700}
 </style>
 
 </head><body>
@@ -172,6 +218,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <a href="#plan-1" data-plan="1">1안 기하 구성</a>
       <a href="#plan-2" data-plan="2">2안 데이터 흐름</a>
       <a href="#plan-3" data-plan="3">3안 연결 네트워크</a>
+      <a href="#proof" data-plan="proof">최종원고 교정교열</a>
     </nav>
   </div>
 </header>
@@ -284,7 +331,9 @@ const PROGRESS = {
     { state: "done", title: "수정안 제작", date: "11.19", note: "이전 디자인 유지 + 컬러 변경, 공통 일러스트, 1안 서체 적용" },
     { state: "done", title: "디자인 컨펌 (최종 확정)", date: "11.19", note: "결핵·감시연보 표지·간지·내지 디자인 최종 확정" },
     { state: "done", title: "제공처 확인 사항 회신", date: "11.19", note: "신환자율 20.4 확정, 지도 진하기 순서 동구>대덕구>중구>서구>유성구" },
-    { state: "now",  title: "최종 원고 수령", date: "대기 중", note: "결핵연보 최종 수정본, 감시연보 원고 — 받는 대로 본문 조판 시작" },
+    { state: "done", title: "최종 원고 수령", date: "11.19", note: "결핵연보 최종 수정본·피드백, 감시연보 표·그림 모음" },
+    { state: "done", title: "최종 원고 교정교열", date: "11.19", note: "피드백 반영, 오탈자 수정, 수치 대조 — 변경 이력 193건, 확인 요청 186건" },
+    { state: "wait", title: "제공처 확인 → 2차 최종원고 회신", date: "", note: "'최종원고 교정교열' 메뉴 순서대로 확인 후 카카오톡으로 회신" },
     { state: "todo", title: "본문 조판", date: "예정", note: "확정 디자인으로 전체 쪽 조판" },
     { state: "todo", title: "교정 (1차·2차)", date: "예정", note: "제공처 교정 반영" },
     { state: "todo", title: "인쇄용 PDF 납품", date: "예정", note: "PDF/X-1a:2001, CMYK" }
@@ -499,10 +548,148 @@ function planPage(k) {
   window.scrollTo(0, 0);
 }
 
+// ---- 최종원고 교정교열: 제공처가 순서대로 따라 하며 확인하는 화면
+const PROOF = {
+  date: "2026-11-19",
+  counts: { change: 193, check: 186, tbCheck: 11, gsCheck: 175 },
+  files: [
+    { href: "files/tb_manuscript.hwp", name: "2025 결핵연보_교정본.hwp", ext: "HWP", desc: "결핵연보 원고 교정본. 확인할 곳은 빨간 굵은 글씨로 표시", reply: "2025 결핵연보_2차 최종원고.hwp" },
+    { href: "files/tb_manuscript.pdf", name: "2025 결핵연보_교정본.pdf", ext: "PDF", desc: "쪽 번호 확인용(한글 인쇄 설정대로 한 장에 4쪽)" },
+    { href: "files/tb_tables.xlsx", name: "2025 결핵연보 표 그래프_교정본.xlsx", ext: "XLSX", desc: "결핵연보 표·그래프 교정본", reply: "2025 결핵연보 표 그래프_2차 최종원고.xlsx" },
+    { href: "files/gs_tables.xlsx", name: "2025 감시연보 표, 그림 모음_교정본.xlsx", ext: "XLSX", desc: "감시연보 표·그림 교정본", reply: "2025 감시연보 표, 그림 모음_2차 최종원고.xlsx" },
+    { href: "files/proof_report.xlsx", name: "교정교열_변경이력_확인요청.xlsx", ext: "XLSX", desc: "변경 이력 193건 · 확인 요청 186건 목록, '제공처 회신' 칸 포함", reply: "교정교열_확인요청_2차 최종원고.xlsx" }
+  ],
+  tb: [
+    { t: "그림 8·9·10 자료", d: "다른 연도·지역 자료가 들어 있었습니다(그림 9는 2024년 전국 값, 그림 10은 대전 자리에 전국 값). 표 4·5의 2025년 값으로 바꿨습니다. 맞는지 확인해 주세요.",
+      w: ["결핵 엑셀 '그림 7,8' B33:S34", "'그림 9,10' B2:S3 · B32:S33"] },
+    { t: "그림 30·32 자료", d: "2024년 값이 섞여 있어 표 16 값으로 맞췄습니다(그림 30의 2024년 전국 58.7·대전 59.3, 그림 32의 2025년 자치구 값).",
+      w: ["결핵 엑셀 '표16, 그림 30,31,32' W3:W4 · E49:I49"] },
+    { t: "전국 2025년 신환자율 26.9명", d: "표 12·그림 23은 26.8명, 표 1·요약은 26.9명이었습니다. 대전 20.4명과 같은 기준으로 26.9명에 맞췄습니다.",
+      w: ["결핵 엑셀 '표 12, 그림 23,24' T3 · B26"] },
+    { t: "지난번 회신이 없었던 2건", d: "서울 2020년 표준화율(36.8)이 조율(36.6)보다 높습니다. 2024년 대전 65세 이상 신환자는 183명인데 5개 구 합계는 186명입니다.",
+      w: ["결핵 엑셀 '표 12, 그림 23,24' K4", "'표16, 그림 30,31,32' K12"] },
+    { t: "표 3 주석의 표준인구 표기", d: "표 3 주석은 '2005년 추계인구', 작성개요는 '2005년 주민등록연앙인구'입니다. 어느 쪽이 맞는지 알려 주세요.",
+      w: ["결핵 원고 교정본 21쪽"] },
+    { t: "2016~2024년 값 유지 확인", d: "2023년 대전 신환자율만 21.6명으로 바뀌어, 같은 줄의 환자율(26.8명)과 표 3의 대전 표준화율(2016~2023년)은 이전 계산 그대로입니다. 결정하신 대로 이대로 인쇄해도 되는지 확인해 주세요.",
+      w: ["결핵 엑셀 '표 1.' D18", "'표 3, 그림 5,6' I11"] }
+  ],
+  gs: [
+    { t: "결핵 포함 기준", d: "합계·순위표·자치구 순위표에 결핵을 넣었는지가 연도와 표마다 다릅니다(2025년 합계는 결핵 제외, 2023년은 포함). 기준을 정해 주시면 그에 맞추겠습니다.",
+      w: ["표3", "표4,5", "표14·21·28·35·42"] },
+    { t: "2024년 결핵 수치", d: "표 7은 14,412명/299명, 표 49·50은 17,944명/369명입니다. 어느 값이 맞는지 알려 주세요.",
+      w: ["표7", "표49", "표50"] },
+    { t: "울산·세종 열", d: "요약 시트의 울산·세종 열이 서로 바뀐 것으로 보입니다(이 시트 울산 795/세종 2,513, 표 3은 반대).",
+      w: ["'감염지역별 신고수' K열·L열"] },
+    { t: "발생률 계산 인구", d: "같은 해인데도 표마다 다른 인구를 쓴 곳이 있습니다(예: 2023년 1,438,846명과 약 1,444,200명). 표 3 S10에는 숫자 대신 글자 '51037252,5'가 들어 있습니다.",
+      w: ["표3 R10:V10", "표4,5", "표50"] },
+    { t: "그림(발생률) 2025년 값", d: "C형간염, 쯔쯔가무시증, B형간염(급성), SFTS, 말라리아, 신증후군출혈열 값이 표 50과 다릅니다.",
+      w: ["'그림(발생률)' 시트"] },
+    { t: "월별 그림 전국 자료", d: "말라리아와 쯔쯔가무시증의 전국 자료가 서로 바뀌어 있습니다.",
+      w: ["'그림(월별)' U153:AF153 · T240:AE240"] },
+    { t: "표 51~54 누락·복사 오류", d: "2024년 매독·엠폭스 행이 없고, 2024년 파상풍 월별 값이 모두 0입니다(연간 29명). 2021년 일부 행이 2022년 값과 같습니다.",
+      w: ["표51", "표52", "표53", "표54"] },
+    { t: "자치구 순위표 수치", d: "일부 수치와 순위가 원자료와 다릅니다(유성구·중구·동구·대덕구).",
+      w: ["표14·21·28·35·42"] },
+    { t: "그림 번호·제목", d: "번호가 겹치거나 빠진 곳이 있고, 제목과 내용이 다른 그림이 있습니다(예: '[그림 45] 장출혈성대장균감염증' 아래가 C형간염).",
+      w: ["그림(신고수)·그림(발생률)·그림(연령별)·그림(월별)"] },
+    { t: "나머지 확인 요청", d: "위 9가지 외의 칸별 내용은 '교정교열_변경이력_확인요청.xlsx'의 '확인 요청' 시트(연보: 감시)에 모두 있습니다. 차례로 '제공처 회신' 칸에 답을 적어 주세요.",
+      w: ["확인 요청 시트"] }
+  ]
+};
+const PF_KEY = "proof-check-20261119";
+function pfLoad() { try { return JSON.parse(localStorage.getItem(PF_KEY) || "{}"); } catch (e) { return {}; } }
+function pfSave(s) { try { localStorage.setItem(PF_KEY, JSON.stringify(s)); } catch (e) {} }
+
+function proofPage() {
+  document.title = "최종원고 교정교열 · 확인 안내";
+  setTabs("proof");
+  const st = pfLoad();
+  const item = (id, o, i) => `
+    <li class="chk${st[id] ? " done" : ""}" data-id="${id}">
+      <input type="checkbox" id="c-${id}" ${st[id] ? "checked" : ""} aria-label="${esc(o.t)} 확인 완료">
+      <label for="c-${id}"><h3><span class="k mono">${i + 1}</span>${esc(o.t)}</h3>
+        <p>${esc(o.d)}</p>
+        <div class="where">${o.w.map(w => `<span>${esc(w)}</span>`).join("")}</div></label>
+    </li>`;
+  const files = PROOF.files.map(f => `
+    <a class="file" href="${f.href}" download="${esc(f.name)}">
+      <span class="ext">${f.ext}</span><strong>${esc(f.name)}</strong><span class="d">${esc(f.desc)}</span>
+      <span class="dl">내려받기 ↓</span></a>`).join("");
+  const names = PROOF.files.filter(f => f.reply).map(f => `
+      <span class="a">${esc(f.name)}</span><span class="to">→</span><span class="b">${esc(f.reply)}</span>`).join("");
+  const total = PROOF.tb.length + PROOF.gs.length + 1;
+  app.innerHTML = `
+    <section class="plan-head">
+      <div class="eyebrow">Final manuscript · Proofreading</div>
+      <h1>최종원고 교정교열 확인 안내</h1>
+      <p>보내 주신 최종 원고에 결핵연보 피드백을 반영하고, 교정교열과 수치 대조를 마쳤습니다. 아래 순서대로 따라 하시면서 확인해 주세요. 확인한 항목은 체크해 두시면 이 브라우저에 남습니다.</p>
+      <div class="pf-sum"><span><b class="mono">${PROOF.counts.change}</b>건 변경 이력</span><span><b class="mono">${PROOF.counts.check}</b>건 확인 요청 (결핵 ${PROOF.counts.tbCheck} · 감시 ${PROOF.counts.gsCheck})</span><span>기준 <span class="mono">${PROOF.date}</span></span></div>
+      <div class="pf-meter"><div class="bar"><i id="pf-bar"></i></div><p id="pf-count"></p></div>
+    </section>
+
+    <section class="pf-step" id="pf-1">
+      <h2><span class="n">1단계</span>교정본 내려받기</h2>
+      <p class="lead">원본 파일은 그대로 두고 교정본에만 고쳤습니다. 아래 파일을 모두 내려받아 주세요.</p>
+      <div class="files">${files}</div>
+    </section>
+
+    <section class="pf-step" id="pf-2">
+      <h2><span class="n">2단계</span>보는 방법</h2>
+      <div class="howto">
+        <div><h3>변경 이력</h3><p>오탈자·표기 등 저희가 고친 내용 전부. '변경 이력' 시트에 파일·위치·변경 전·변경 후가 있습니다. 훑어보시고 이상한 곳만 알려 주세요.</p></div>
+        <div><h3>확인 요청</h3><p>판단이 필요한 곳. 교정본에서 <span class="redbold">빨간 굵은 글씨</span>로 표시해 두었고, '확인 요청' 시트에 목록이 있습니다.</p></div>
+        <div><h3>위치 찾기</h3><p>한글 원고는 교정본 쪽 번호(각 쪽 아래 '- n -'), 엑셀은 '시트 이름'!셀로 적었습니다.</p></div>
+      </div>
+    </section>
+
+    <section class="pf-step" id="pf-3">
+      <h2><span class="n">3단계</span>결핵연보 확인</h2>
+      <p class="lead">결정해 주신 대로 2016~2024년 수치는 그대로 두었고, 회신 값(2023년 대전 21.6명, 제주 2022년 29.1, 대전 2025년 20.4명)은 관련 표·그림에 모두 맞췄습니다. 아래 항목을 확인해 주세요.</p>
+      <ol class="checks">${PROOF.tb.map((o, i) => item("tb" + i, o, i)).join("")}</ol>
+    </section>
+
+    <section class="pf-step" id="pf-4">
+      <h2><span class="n">4단계</span>감시연보 확인</h2>
+      <p class="lead">감염병 이름 오타(진드개매개뇌염 → 진드기매개뇌염, 니파바이러스 → 니파바이러스감염증 등)와 단위·기간 표기는 저희가 통일했습니다. 수치는 아래 항목부터 봐 주세요.</p>
+      <ol class="checks">${PROOF.gs.map((o, i) => item("gs" + i, o, i)).join("")}</ol>
+    </section>
+
+    <section class="pf-step" id="pf-5">
+      <h2><span class="n">5단계</span>2차 최종원고로 저장해 카카오톡으로 보내기</h2>
+      <div class="send"><ol>
+        <li>값을 고칠 곳은 <b>교정본 파일에서 직접</b> 고쳐 주세요. 고친 칸의 빨간 표시는 그대로 두셔도 됩니다.</li>
+        <li><b>'교정교열_변경이력_확인요청.xlsx'</b>의 '확인 요청' 시트 노란 <b>'제공처 회신'</b> 칸에 항목마다 답을 적어 주세요. (예: 맞음 / 수정함 — 29.1 / 결핵 포함 기준으로 통일)</li>
+        <li>확인이 끝난 파일은 이름을 <b>'2차 최종원고'</b>로 바꿔 저장해 주세요.
+          <div class="names">${names}</div></li>
+        <li>바꾼 파일 4개(한글 1, 엑셀 3)를 <b>카카오톡</b>으로 보내 주세요.
+          <div class="pf-check"><label class="chk" style="margin-top:8px"><input type="checkbox" id="c-send" ${st.send ? "checked" : ""}><span><h3>2차 최종원고 4개 파일 카카오톡 전송 완료</h3></span></label></div></li>
+      </ol></div>
+      <p class="lead">받는 대로 반영해 확정 디자인으로 본문 편집을 시작하겠습니다. 번거로우시겠지만 확인 부탁드립니다. 감사합니다.</p>
+    </section>
+
+    <div class="end">
+      <a class="btn" href="#home">← 홈</a>
+      <a class="btn primary" href="#pf-1" id="pf-top">처음 단계로 ↑</a>
+    </div>`;
+  const sync = () => {
+    const s = pfLoad(), n = Object.values(s).filter(Boolean).length;
+    document.getElementById("pf-bar").style.width = Math.round(n / total * 100) + "%";
+    document.getElementById("pf-count").textContent = `확인 ${n} / ${total}항목`;
+  };
+  app.querySelectorAll(".checks .chk input").forEach(cb => cb.addEventListener("change", () => {
+    const li = cb.closest(".chk"), s = pfLoad();
+    s[li.dataset.id] = cb.checked; pfSave(s); li.classList.toggle("done", cb.checked); sync();
+  }));
+  document.getElementById("c-send").addEventListener("change", e => { const s = pfLoad(); s.send = e.target.checked; pfSave(s); sync(); });
+  document.getElementById("pf-top").addEventListener("click", e => { e.preventDefault(); document.getElementById("pf-1").scrollIntoView({ block: "start" }); });
+  sync();
+  window.scrollTo(0, 0);
+}
+
 function route() {
   const h = location.hash.replace(/^#/, "");
   const m = h.match(/^plan-([123])(?:-\d+)?$/);   // 예전 상세 주소(#plan-2-5)도 시안 페이지로
-  if (h === "plan-r") revPage(); else if (m) planPage(m[1]); else home();
+  if (h === "plan-r") revPage(); else if (h === "proof") proofPage(); else if (m) planPage(m[1]); else home();
 }
 window.addEventListener("hashchange", route);
 route();
