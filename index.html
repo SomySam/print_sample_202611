@@ -198,11 +198,11 @@ const REV = {
   name: "수정안",
   colors: [
     ["결핵 주색 바이올렛", "#6A3FB5"], ["결핵 보조 머스타드", "#E0A526"],
-    ["감시 주색 골드 앰버", "#D99208"], ["감시 강조 차콜", "#3F3B38"]
+    ["감시 주색 파랑", "#3A6CB3"], ["감시 보조 노랑", "#E8B730"]
   ],
   scenes: {
     tb: [["cover", "표지 펼침면"], ["sum", "요약 펼침"], ["toc", "목차 펼침"], ["div", "간지 펼침"], ["body", "본문 샘플"]],
-    gs: [["cover", "표지 (뒤표지 · 앞표지)"], ["toc", "목차 펼침"], ["div", "간지 펼침"], ["body", "본문 샘플"]]
+    gs: [["cover", "표지 펼침면"], ["toc", "목차 펼침"], ["div", "간지 펼침"], ["body", "본문 샘플"]]
   }
 };
 const BOOK = {
@@ -318,7 +318,7 @@ function revPage() {
             <span class="h">주색</span>
             <span class="sw"><i style="background:${REV.colors[0][1]}"></i><span class="mono">${REV.colors[0][1]}</span></span>
             <span class="sw"><i style="background:${REV.colors[2][1]}"></i><span class="mono">${REV.colors[2][1]}</span></span>
-            <span class="h">보조·강조</span>
+            <span class="h">보조</span>
             <span class="sw"><i style="background:${REV.colors[1][1]}"></i><span class="mono">${REV.colors[1][1]}</span></span>
             <span class="sw"><i style="background:${REV.colors[3][1]}"></i><span class="mono">${REV.colors[3][1]}</span></span>
           </div>
