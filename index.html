@@ -689,7 +689,8 @@ function proofPage() {
 function route() {
   const h = location.hash.replace(/^#/, "");
   const m = h.match(/^plan-([123])(?:-\d+)?$/);   // 예전 상세 주소(#plan-2-5)도 시안 페이지로
-  if (h === "plan-r") revPage(); else if (h === "proof") proofPage(); else if (m) planPage(m[1]); else home();
+  // 주소만으로 들어오면(해시 없음) 최종원고 교정교열 화면을 먼저 보여 줌 — 홈은 #home
+  if (h === "plan-r") revPage(); else if (h === "proof" || h === "") proofPage(); else if (m) planPage(m[1]); else home();
 }
 window.addEventListener("hashchange", route);
 route();
