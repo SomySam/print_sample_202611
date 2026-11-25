@@ -223,6 +223,23 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .opts span{color:var(--muted)}
 .fixed{margin:16px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14.5px}
 .fixed li span{color:var(--muted)}
+/* 최종원고 교정교열 3차 */
+.tabs a[data-plan="proof3"]{color:var(--fg);font-weight:700}
+.chg{list-style:none;margin:16px 0 0;padding:0;display:flex;flex-direction:column;gap:10px}
+.chg li{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px 16px}
+.chg h3{font-size:15px;line-height:1.45}
+.chg h3 .k{color:var(--muted);font-weight:500;margin-right:6px}
+.chg .ba{display:grid;grid-template-columns:52px minmax(0,1fr);gap:4px 10px;margin-top:8px;font-size:14px}
+.chg .ba dt{color:var(--muted);font-size:12.5px;padding-top:1px}
+.chg .ba dd{margin:0}
+.chg .ba dd.old{text-decoration:line-through;color:var(--muted)}
+.chg .why{margin:8px 0 0;font-size:13.5px;color:var(--muted)}
+.st{display:inline-block;font-size:12px;font-weight:700;border-radius:999px;padding:1px 9px;border:1px solid var(--line);color:var(--muted)}
+.st.ok{background:var(--accent);border-color:var(--accent);color:var(--accent-fg)}
+.status{width:100%;border-collapse:collapse;margin-top:14px;font-size:14px}
+.status th,.status td{border-bottom:1px solid var(--line);padding:8px 6px;text-align:left;vertical-align:top}
+.status th{font-size:12.5px;color:var(--muted);font-weight:600}
+@media (max-width:640px){.chg .ba{grid-template-columns:1fr}.chg .ba dt{padding-top:6px}}
 </style>
 
 </head><body>
@@ -236,6 +253,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <a href="#plan-3" data-plan="3">3안 연결 네트워크</a>
       <a href="#proof" data-plan="proof">최종원고 교정교열</a>
       <a href="#proof2" data-plan="proof2">최종원고 교정교열 2차</a>
+      <a href="#proof3" data-plan="proof3">최종원고 교정교열 3차</a>
     </nav>
   </div>
 </header>
@@ -867,11 +885,118 @@ function proof2Page() {
   window.scrollTo(0, 0);
 }
 
+// ---- 최종원고 교정교열 3차: 2차 이후 저희가 미리 고친 것과 그 이유(기록)
+const PROOF3 = {
+  date: "2026-11-25",
+  files: [
+    { href: "files/r3_gs_manuscript.hwp", name: "2025 대전광역시 감염병 감시연보(한글파일)_수정본1125.hwp", ext: "HWP", desc: "아래 '원고에 고친 것' 2건까지 반영한 감시연보 한글 원고(고친 곳 빨간 굵은 글씨)" },
+    { href: "files/r3_record.xlsx", name: "교정교열3차_수정기록_1125.xlsx", ext: "XLSX", desc: "고친 위치·수정 전·수정 후·이유·근거 전체 기록(시트 4개)" }
+  ],
+  text: [
+    { t: "신고서식 이름을 현행대로", w: "감시연보 I-5 다. 신고 방법 > 신고서식",
+      before: "[별지 제1호의3서식] 감염병 발생 신고서", after: "[별지 제1호의3서식] 감염병(발생, 사망(검안)) 신고서",
+      why: "현행 서식 제목과 맞췄습니다. 근거: 감염병예방법 시행규칙 별지 제1호의3서식(개정 2024. 12. 6.)." },
+    { t: "삭제된 서식 안내 줄 삭제", w: "감시연보 I-5 다. 신고 방법 > 신고서식",
+      before: "[별지 제1호의4서식] 감염병환자등 사망(검안) 신고서 <부록 IV-1 참고>", after: "(줄 삭제)",
+      why: "제1호의4서식은 2023. 7. 13. 삭제되었고 사망(검안) 신고는 제1호의3서식에 합쳐졌습니다(국가법령정보센터 서식 목록). 2차 확인 요청 중 '신고서식 번호'는 이것으로 해결되어, 결과만 확인해 주시면 됩니다." }
+  ],
+  forms: [
+    { t: "부록 IV-1 감염병(발생, 사망(검안)) 신고서 4쪽", d: "[별지 제1호의3서식] 개정 2024. 12. 6. — 국가법령정보센터 원본 PDF를 그대로 실었습니다." },
+    { t: "부록 IV-2 병원체 검사결과 신고서 1쪽", d: "[별지 제1호의5서식] 개정 2023. 12. 29. — 국가법령정보센터 원본 PDF를 그대로 실었습니다." }
+  ],
+  layout: [
+    { t: "발생률 산출식(감시 I-2 나. 2)", d: "원고의 수식이 글로 읽히지 않아 '(해당연도 신고수 ÷ 해당연도 주민등록 연앙인구수) × 100,000'으로 적었습니다. 수식 모양을 원하시면 알려 주세요.", ask: true },
+    { t: "다이아몬드 모델(감시 그림 3, 64~68)", d: "원고 그림이 2024년 내용이어서 2025년 자료로 새로 그렸습니다. 대전 결과(성홍열·장출혈성대장균감염증·A형간염·레지오넬라증)는 본문 문장과 같습니다. 판정 기준은 확인이 필요합니다.", ask: true },
+    { t: "감염병별 그림 60개(감시 그림 4~63)", d: "엑셀 그림 시트 대신 표 9·10·49·50 값으로 그려 그림과 표가 항상 같습니다. 전국·대전 신고 수는 눈금 두 개 대신 두 칸으로 나눴습니다." },
+    { t: "그림 1 흐름도·그림 2 발생률", d: "그림 1은 같은 내용을 벡터로 다시 그렸고, 그림 2는 표 3 오른쪽 발생률 자료로 그렸습니다(결핵 기준 결정 후 바뀔 수 있음)." },
+    { t: "표 정리(감시 표 2, 표 끝 '※' 줄)", d: "표 2는 쪼개진 부호 칸을 한 칸으로 합쳤고, 표 끝의 '※' 문장은 표 아래 주석으로 옮겼습니다. 값과 문장은 그대로입니다." },
+    { t: "결핵연보 그림 16·17·18·25·35·37·38", d: "값은 그대로 두고 그리는 방식만 바꿨습니다(연령 축 꺾은선, 자치구별 작은 칸, 최근 해만 색)." }
+  ],
+  status: [
+    ["결핵 기준(신환자/환자) 통일", "대기"], ["표 3 합계의 결핵 포함 여부", "대기"], ["합계와 세부 합 차이(연령 미상?)", "대기"],
+    ["2023년 대전 발생률 재계산", "대기"], ["결핵연보 표 3 2016~2022년 표준화율", "대기"], ["신고서식 번호", "해결"],
+    ["그림 50·51·58·59·62·63 '대전광역시'", "대기"], ["발간사·판권 정보", "대기"], ["그림 번호 체계", "반영"]
+  ]
+};
+const PF3_KEY = "proof3-check-20261125";
+function pf3Load() { try { return JSON.parse(localStorage.getItem(PF3_KEY) || "{}"); } catch (e) { return {}; } }
+function pf3Save(s) { try { localStorage.setItem(PF3_KEY, JSON.stringify(s)); } catch (e) {} }
+
+function proof3Page() {
+  document.title = "최종원고 교정교열 3차 · 수정 기록";
+  setTabs("proof3");
+  const st = pf3Load();
+  const files = PROOF3.files.map(f => `
+    <a class="file" href="${f.href}" download="${esc(f.name)}">
+      <span class="ext">${f.ext}</span><strong>${esc(f.name)}</strong><span class="d">${esc(f.desc)}</span>
+      <span class="dl">내려받기 ↓</span></a>`).join("");
+  const text = PROOF3.text.map((o, i) => `
+      <li><h3><span class="k mono">A-${i + 1}</span>${esc(o.t)}</h3>
+        <div class="where" style="display:flex;gap:6px;margin-top:6px"><span style="font-size:12px;border:1px solid var(--line);border-radius:4px;padding:1px 7px;color:var(--muted)">${esc(o.w)}</span></div>
+        <dl class="ba"><dt>수정 전</dt><dd class="old">${esc(o.before)}</dd><dt>수정 후</dt><dd><b>${esc(o.after)}</b></dd></dl>
+        <p class="why">${esc(o.why)}</p></li>`).join("");
+  const forms = PROOF3.forms.map((o, i) => `<li><h3><span class="k mono">B-${i + 1}</span>${esc(o.t)}</h3><p class="why">${esc(o.d)}</p></li>`).join("");
+  const layout = PROOF3.layout.map((o, i) => `
+      <li class="chk${st["c" + i] ? " done" : ""}" data-id="c${i}">
+        <input type="checkbox" id="c3-c${i}" ${st["c" + i] ? "checked" : ""} aria-label="확인 완료">
+        <label for="c3-c${i}"><h3><span class="k mono">C-${i + 1}</span>${esc(o.t)}${o.ask ? '<span class="tag">확인 필요</span>' : ""}</h3><p>${esc(o.d)}</p></label>
+      </li>`).join("");
+  const rows = PROOF3.status.map(([t, s]) => `<tr><td>${esc(t)}</td><td><span class="st${s === "대기" ? "" : " ok"}">${s}</span></td></tr>`).join("");
+  app.innerHTML = `
+    <section class="plan-head">
+      <div class="eyebrow">Final manuscript · Round 3</div>
+      <h1>최종원고 교정교열 3차</h1>
+      <p>2차 회신을 기다리는 동안 저희가 미리 고친 것과 그 이유를 기록한 화면입니다. 법령 근거로 바로잡을 수 있는 곳은 원고에 반영해 두었고, 본문 편집(조판)에도 같은 내용이 들어가 있습니다. 판단이 필요한 항목은 그대로 <a href="#proof2">교정교열 2차</a>에 있습니다.</p>
+      <div class="pf-sum"><span><b class="mono">${PROOF3.text.length}</b>건 원고 수정</span><span><b class="mono">${PROOF3.forms.length}</b>건 부록 서식</span><span><b class="mono">${PROOF3.layout.length}</b>건 조판 때 바꾼 표현</span><span>기준 <span class="mono">${PROOF3.date}</span></span></div>
+    </section>
+
+    <section class="pf-step" id="pf3-1">
+      <h2><span class="n">1</span>내려받기</h2>
+      <p class="lead">한글 원고는 2차에서 보내 드린 수정본에 아래 2건을 더한 것입니다.</p>
+      <div class="files">${files}</div>
+    </section>
+
+    <section class="pf-step" id="pf3-2">
+      <h2><span class="n">2</span>원고에 고친 것</h2>
+      <p class="lead">현행 법령과 맞지 않던 부분이라 원고(수정본)에 바로 반영했습니다. 고친 곳은 빨간 굵은 글씨입니다.</p>
+      <ul class="chg">${text}</ul>
+    </section>
+
+    <section class="pf-step" id="pf3-3">
+      <h2><span class="n">3</span>부록 서식 반영</h2>
+      <p class="lead">원고에 서식 자리만 있어, 국가법령정보센터의 최신 서식을 받아 실었습니다.</p>
+      <ul class="chg">${forms}</ul>
+    </section>
+
+    <section class="pf-step" id="pf3-4">
+      <h2><span class="n">4</span>조판하면서 바꾼 표현</h2>
+      <p class="lead">값과 문장은 그대로 두고 책에 앉히는 방식만 바꾼 것입니다. '확인 필요' 표시가 있는 2건은 의견을 알려 주세요.</p>
+      <ol class="checks">${layout}</ol>
+    </section>
+
+    <section class="pf-step" id="pf3-5">
+      <h2><span class="n">5</span>확인 요청 진행 상황</h2>
+      <p class="lead">2차에서 여쭌 항목의 현재 상태입니다. '대기' 항목은 <a href="#proof2">교정교열 2차</a> 3단계에서 답해 주시면 됩니다.</p>
+      <table class="status"><thead><tr><th>항목</th><th>상태</th></tr></thead><tbody>${rows}</tbody></table>
+    </section>
+
+    <div class="end">
+      <a class="btn" href="#proof2">← 교정교열 2차</a>
+      <a class="btn primary" href="#pf3-1" id="pf3-top">처음으로 ↑</a>
+    </div>`;
+  app.querySelectorAll(".checks .chk input").forEach(cb => cb.addEventListener("change", () => {
+    const li = cb.closest(".chk"), s = pf3Load();
+    s[li.dataset.id] = cb.checked; pf3Save(s); li.classList.toggle("done", cb.checked);
+  }));
+  document.getElementById("pf3-top").addEventListener("click", e => { e.preventDefault(); document.getElementById("pf3-1").scrollIntoView({ block: "start" }); });
+  window.scrollTo(0, 0);
+}
+
 function route() {
   const h = location.hash.replace(/^#/, "");
   const m = h.match(/^plan-([123])(?:-\d+)?$/);   // 예전 상세 주소(#plan-2-5)도 시안 페이지로
   // 주소만으로 들어오면(해시 없음) 가장 최근 교정교열(2차) 화면을 먼저 보여 줌 — 홈은 #home
-  if (h === "plan-r") revPage(); else if (h === "proof2" || h === "") proof2Page(); else if (h === "proof") proofPage(); else if (m) planPage(m[1]); else home();
+  if (h === "plan-r") revPage(); else if (h === "proof2" || h === "") proof2Page(); else if (h === "proof3") proof3Page(); else if (h === "proof") proofPage(); else if (m) planPage(m[1]); else home();
   withProgress();
 }
 // 모든 페이지에 진행 상황 패널을 붙임(홈은 이미 있음). 노드를 옮겨 담아 각 페이지의 이벤트는 그대로 유지
