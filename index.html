@@ -213,6 +213,16 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
 .pf-fig figcaption{font-size:12.5px;color:var(--muted);margin-top:8px}
 .chk .points{margin:6px 0 0}
 .kakao{display:inline-flex;align-items:center;gap:6px;margin-top:6px;font-weight:700}
+/* 최종원고 교정교열 2차 */
+.tabs a[data-plan="proof2"]{color:var(--fg);font-weight:700}
+.chk .tag{display:inline-block;font-size:11.5px;font-weight:700;border-radius:4px;padding:1px 7px;margin-left:8px;vertical-align:2px;border:1px solid var(--line);color:var(--muted)}
+.chk .tag.top{background:#D00000;border-color:#D00000;color:#fff}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:10px}
+.opts div{border:1px solid var(--line);border-radius:8px;padding:10px 12px;font-size:13.5px;background:var(--bg)}
+.opts b{display:block;font-size:14px;margin-bottom:2px;color:var(--fg)}
+.opts span{color:var(--muted)}
+.fixed{margin:16px 0 0;padding-left:20px;display:flex;flex-direction:column;gap:6px;font-size:14.5px}
+.fixed li span{color:var(--muted)}
 </style>
 
 </head><body>
@@ -225,6 +235,7 @@ body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset
       <a href="#plan-2" data-plan="2">2안 데이터 흐름</a>
       <a href="#plan-3" data-plan="3">3안 연결 네트워크</a>
       <a href="#proof" data-plan="proof">최종원고 교정교열</a>
+      <a href="#proof2" data-plan="proof2">최종원고 교정교열 2차</a>
     </nav>
   </div>
 </header>
@@ -340,7 +351,8 @@ const PROGRESS = {
     { state: "done", title: "최종 원고 수령", date: "11.19", note: "결핵연보 최종 수정본·피드백, 감시연보 표·그림 모음" },
     { state: "done", title: "최종 원고 교정교열", date: "11.19", note: "피드백 반영, 오탈자 수정, 수치 대조 — 변경 이력 193건, 확인 요청 186건" },
     { state: "done", title: "제공처 확인 → 2차 최종원고 회신", date: "11.24", note: "결핵연보 2차 최종원고·확인 요청 회신, 감시연보 한글 원고·표 수령" },
-    { state: "now", title: "2차 최종원고 데이터 파악", date: "11.25", note: "내용 확인, 오탈자 확인, 데이터 정합성 점검 중" },
+    { state: "done", title: "2차 최종원고 데이터 파악", date: "11.25", note: "오탈자 64건 수정, 데이터 69곳 수정본, 확인 요청 11건" },
+    { state: "wait", title: "제공처 판단 → 3차 최종원고 회신", date: "", note: "'최종원고 교정교열 2차' 메뉴 순서대로 확인 후 카카오톡으로 회신" },
     { state: "todo", title: "본문 조판", date: "예정", note: "확정 디자인으로 전체 쪽 조판" },
     { state: "todo", title: "교정 (1차·2차)", date: "예정", note: "제공처 교정 반영" },
     { state: "todo", title: "인쇄용 PDF 납품", date: "예정", note: "PDF/X-1a:2001, CMYK" }
@@ -712,11 +724,154 @@ function proofPage() {
   window.scrollTo(0, 0);
 }
 
+// ---- 최종원고 교정교열 2차: 2차 최종원고 검토 결과 + 제공처가 판단할 항목
+const PROOF2 = {
+  date: "2026-11-25",
+  counts: { typo: 64, data: 69, ask: 11 },
+  files: [
+    { href: "files/r2_gs_manuscript.hwp", name: "2025 대전광역시 감염병 감시연보(한글파일)_수정본1125.hwp", ext: "HWP", desc: "감시연보 한글 원고. 오탈자 수정 + 데이터 수정(빨간 굵은 글씨)", reply: "2025 감시연보_3차 최종원고.hwp" },
+    { href: "files/r2_gs_tables.xlsx", name: "gs_tables_수정본1125.xlsx", ext: "XLSX", desc: "감시연보 표·그림. 고친 셀은 빨간 굵은 글씨", reply: "2025 감시연보 표 그림_3차 최종원고.xlsx" },
+    { href: "files/r2_tb_tables.xlsx", name: "2025 결핵연보 표 그래프_2차 최종원고_수정본1125.xlsx", ext: "XLSX", desc: "결핵연보 표·그래프. 회신 9번(표 3 대전 2023년 13.7명) 반영", reply: "2025 결핵연보 표 그래프_3차 최종원고.xlsx" },
+    { href: "files/r2_report.xlsx", name: "2차최종원고_검토결과_1125.xlsx", ext: "XLSX", desc: "오탈자 수정 64건 · 데이터 수정 69곳 · 확인 요청 11건, '제공처 회신' 칸 포함", reply: "확인요청_3차 회신.xlsx" }
+  ],
+  decide: [
+    { top: true, t: "감시연보 결핵 수치를 어느 기준으로 통일할까요?",
+      d: "2021~2023년은 신환자 수인데 2025년은 결핵 환자 수(17,070명, 대전 384명)이고, 2024년은 표마다 다릅니다. 그래서 본문의 '신환자 기준 … 전년 대비 18.4% 증가', '대전 28.4% 증가'는 서로 다른 기준을 비교한 값입니다. 신환자로 비교하면 전국 13,713명(4.9% 감소), 대전 293명(2.0% 감소)입니다.",
+      opts: [["가) 신환자로 통일", "표 주석('결핵은 신환자 기준')과 같습니다. 2025년 결핵의 월·연령·성별·자치구 자료를 신환자 기준으로 다시 보내 주셔야 합니다."],
+             ["나) 결핵 환자로 통일", "2021~2024년을 결핵 환자 수로 바꾸고 주석을 '결핵 환자 기준'으로 고칩니다. 2025년 자료는 그대로 쓸 수 있습니다."]],
+      w: ["표7·표49·표50", "표4·5 및 자치구 순위표", "표19·26·33·40·47", "표51~54", "본문 결핵 절·신고현황 요약"] },
+    { top: true, t: "표 3 합계에 결핵을 넣을까요?",
+      d: "2025년 전국·대전 합계는 결핵을 포함했고 2024년 이전은 뺐습니다. 2025년 시·도 중에는 대전만 결핵이 들어가 있습니다. 이 때문에 본문의 2024년 수치(170,661명, 3,773명)와 그림 2 자료가 표 3과 맞지 않습니다. 위 1번 기준과 함께 정해 주시면 전 연도·시도를 같은 기준으로 맞추겠습니다(시·도별 결핵 수가 필요할 수 있습니다).",
+      w: ["표3", "그림 2", "본문 II-1 요약"] },
+    { t: "결핵연보 표 3의 2016~2022년 대전 표준화율도 표 12 값으로 맞출까요?",
+      d: "회신대로 2023년은 13.7명으로 고쳤습니다. 2016~2022년도 표 12와 다릅니다(표 3: 35.2·34.5·28.7·24.4·18.2·17.7·15.2명 / 표 12: 38.1·37.5·31.5·26.8·20.3·19.7·17.0명).",
+      w: ["결핵 엑셀 '표 3, 그림 5,6' I4:I10", "'표 12, 그림 23,24' 대전 행"] },
+    { t: "합계와 세부 합이 다른 곳 — 연령 미상 건인가요?",
+      d: "표 10(2025 수두·유행성이하선염·CRE·E형간염), 표 51 월별(백일해 2021·2022, E형간염 2022, 파상풍 2024 — 월별 값이 거의 0, 발진열 2024), 표 52 연령별(2024년 여러 감염병), 표 53 성별(장티푸스 2021 — 2022년 값이 들어간 것으로 보임)의 합이 연간 신고수와 다릅니다. 연령 미상이면 '연령 미상' 칸이나 주석을 넣을지, 아니면 원자료로 값을 고쳐 주실지 알려 주세요.",
+      w: ["표10", "표51", "표52", "표53"] },
+    { t: "2023년 대전 발생률을 새 인구로 다시 계산할까요?",
+      d: "표 3의 2023년 대전 인구가 1,444,200명으로 바뀌었는데, 표 50의 2023년 대전 발생률 일부는 이전 인구로 계산돼 있습니다(예: 수두 46.6 → 새 인구로 46.5).",
+      w: ["표3 R10", "표50 2023년 대전"] },
+    { t: "신고서식 번호를 확인해 주세요",
+      d: "본문은 [별지 제1호의3서식]과 [별지 제1호의4서식] 두 서식을 안내하는데, 부록 IV-1은 '감염병 발생, 사망(검안) 신고서' 하나입니다. 현행 서식 번호로 본문을 고칠지 알려 주세요.",
+      w: ["본문 I-5 다. 신고서식", "부록 IV-1"] },
+    { t: "그림 50·51·58·59·62·63은 대전 그림인가요?",
+      d: "말라리아·신증후군출혈열·SFTS의 연령별·월별 그림 제목에만 '대전광역시'가 없습니다. 대전 그림이면 제목에 붙이겠습니다.",
+      w: ["그림 목차", "본문 해당 그림 제목"] },
+    { t: "발간사·판권 정보를 알려 주세요",
+      d: "발간사 최종 문구(현재 '추후 수정 예정'), 발간사 날짜(2026. 11.)와 판권 발행일(2026년 12월)이 다른 점, 판권 편집인(빈칸)을 알려 주세요.",
+      w: ["발간사", "판권"] }
+  ]
+};
+const PF2_KEY = "proof2-check-20261125";
+function pf2Load() { try { return JSON.parse(localStorage.getItem(PF2_KEY) || "{}"); } catch (e) { return {}; } }
+function pf2Save(s) { try { localStorage.setItem(PF2_KEY, JSON.stringify(s)); } catch (e) {} }
+
+function proof2Page() {
+  document.title = "최종원고 교정교열 2차 · 판단 항목";
+  setTabs("proof2");
+  const st = pf2Load();
+  const box = (id, inner) => `
+    <li class="chk${st[id] ? " done" : ""}" data-id="${id}">
+      <input type="checkbox" id="c2-${id}" ${st[id] ? "checked" : ""} aria-label="확인 완료">
+      <label for="c2-${id}">${inner}</label>
+    </li>`;
+  const decide = PROOF2.decide.map((o, i) => box("d" + i, `
+      <h3><span class="k mono">${i + 1}</span>${esc(o.t)}${o.top ? '<span class="tag top">먼저 결정</span>' : ""}</h3>
+      <p>${esc(o.d)}</p>
+      ${o.opts ? `<div class="opts">${o.opts.map(([a, b]) => `<div><b>${esc(a)}</b><span>${esc(b)}</span></div>`).join("")}</div>` : ""}
+      <div class="where">${o.w.map(w => `<span>${esc(w)}</span>`).join("")}</div>`)).join("");
+  const files = PROOF2.files.map(f => `
+    <a class="file" href="${f.href}" download="${esc(f.name)}">
+      <span class="ext">${f.ext}</span><strong>${esc(f.name)}</strong><span class="d">${esc(f.desc)}</span>
+      <span class="dl">내려받기 ↓</span></a>`).join("");
+  const names = PROOF2.files.map(f => `
+      <span class="a">${esc(f.name)}</span><span class="to">→</span><span class="b">${esc(f.reply)}</span>`).join("");
+  const total = PROOF2.decide.length + 2;   // + 고친 내용 확인 1 + 전송 1
+  app.innerHTML = `
+    <section class="plan-head">
+      <div class="eyebrow">Final manuscript · Round 2</div>
+      <h1>최종원고 교정교열 2차</h1>
+      <p>보내 주신 2차 최종원고(11.24)와 감시연보 한글 원고를 확인했습니다. 오탈자와 표 사이 수치를 바로잡았고, 담당자님께서 정해 주셔야 할 항목을 아래 3단계에 모았습니다. 확인한 항목은 체크해 두시면 이 브라우저에 남습니다.</p>
+      <div class="pf-sum"><span><b class="mono">${PROOF2.counts.typo}</b>건 오탈자 수정</span><span><b class="mono">${PROOF2.counts.data}</b>곳 데이터 수정</span><span><b class="mono">${PROOF2.counts.ask}</b>건 확인 요청 (핵심 ${PROOF2.decide.length}건)</span><span>기준 <span class="mono">${PROOF2.date}</span></span></div>
+      <div class="pf-meter"><div class="bar"><i id="pf2-bar"></i></div><p id="pf2-count"></p></div>
+    </section>
+
+    <section class="pf-step" id="pf2-1">
+      <h2><span class="n">1단계</span>수정본 내려받기</h2>
+      <p class="lead">아래 4개 파일을 내려받아 주세요. 결핵연보 한글 원고는 이번에 고친 곳이 없어 그대로 쓰시면 됩니다.</p>
+      <div class="files">${files}</div>
+    </section>
+
+    <section class="pf-step" id="pf2-2">
+      <h2><span class="n">2단계</span>보는 방법</h2>
+      <div class="howto">
+        <div><h3>오탈자 수정 (64건)</h3><p>법률 이름, 감염병 이름, 띄어쓰기 등입니다. 수정본에 모두 들어가 있고, 검토결과 파일 '오탈자 수정' 시트에 수정 전·후가 있습니다.</p></div>
+        <div><h3>데이터 수정 (69곳)</h3><p>표끼리 맞지 않던 수치입니다. 수정본에서 <span class="redbold">빨간 굵은 글씨</span>로 표시했고, '데이터 수정' 시트에 근거를 적었습니다.</p></div>
+        <div><h3>확인 요청 (11건)</h3><p>정해 주셔야 하는 부분이라 값을 바꾸지 않았습니다. 아래 3단계가 그 핵심입니다.</p></div>
+      </div>
+    </section>
+
+    <section class="pf-step" id="pf2-3">
+      <h2><span class="n">3단계</span>판단해 주실 항목</h2>
+      <p class="lead">1·2번은 표와 본문 여러 곳에 걸쳐 있어 가장 먼저 정해 주셔야 본문 편집을 이어 갈 수 있습니다. 답은 검토결과 파일 '확인 요청' 시트의 노란 '제공처 회신' 칸에 적어 주세요.</p>
+      <ol class="checks">${decide}</ol>
+    </section>
+
+    <section class="pf-step" id="pf2-4">
+      <h2><span class="n">4단계</span>저희가 고친 내용 훑어보기</h2>
+      <p class="lead">아래 내용은 원자료끼리 맞춰 바로 고쳤습니다. 이상한 곳이 있을 때만 알려 주세요.</p>
+      <ul class="fixed">
+        <li>감시 한글 원고 법률 이름 <span>'예방 및에 관한' → 「감염병의 예방 및 관리에 관한 법률」</span></li>
+        <li>감염병 이름 통일 <span>카바페넴내성장내세균속균종 → 카바페넴내성장내세균목, 폐렴구균 감염증 등</span></li>
+        <li>그림 3 주석 <span>'발생률 1% 이상' → '1명 이상'</span>, III-1-2 제목 <span>(2024) → (2025)</span></li>
+        <li>그림 23·43 제목 <span>앞 그림과 같던 '연령별' → '월별'</span>, 부록 번호 <span>V-2-1 등 → IV-1·IV-2</span></li>
+        <li>본문 유행성이하선염 <span>'10세 미만 65.0%' → 64.9% (4,364명 ÷ 6,720명)</span></li>
+        <li>표 49 <span>수두·유행성이하선염·CRE·E형간염(2025)·성홍열(2024)을 다른 표·본문 값에 맞춤</span></li>
+        <li>표 50 E형간염 발생률 <span>쯔쯔가무시증 값이 들어가 있던 것을 바로잡음</span></li>
+        <li>그림(발생률) 자료 <span>B형간염·C형간염·말라리아·쯔쯔가무시증·신증후군출혈열 값을 표 50에 맞춤</span></li>
+        <li>결핵연보 표 3·그림 6 <span>회신 9번대로 대전 2023년 표준화율 13.7명</span></li>
+      </ul>
+      <ol class="checks">${box("fix", `<h3>고친 내용 확인 완료</h3><p>이상한 곳이 있으면 '확인 요청' 시트 아래쪽에 적어 주세요.</p>`)}</ol>
+    </section>
+
+    <section class="pf-step" id="pf2-5">
+      <h2><span class="n">5단계</span>3차 최종원고로 저장해 카카오톡으로 보내기</h2>
+      <div class="send"><ol>
+        <li>3단계 항목의 답을 <b>'2차최종원고_검토결과_1125.xlsx'</b>의 '확인 요청' 시트 노란 <b>'제공처 회신'</b> 칸에 적어 주세요. (예: 가) 신환자로 통일 / 예, 표 12 값으로 / 연령 미상 주석 추가)</li>
+        <li>값을 직접 고치실 곳은 <b>수정본 파일에서</b> 고쳐 주세요.</li>
+        <li>확인이 끝난 파일은 이름을 <b>'3차 최종원고'</b>로 바꿔 저장해 주세요.
+          <div class="names">${names}</div></li>
+        <li>파일 4개(한글 1, 엑셀 3)를 <b>카카오톡</b>으로 보내 주세요. 결핵 기준을 '가) 신환자'로 정하시면 2025년 결핵 신환자 세부 자료(월·연령·성별·자치구)도 함께 보내 주세요.
+          <div class="pf-check"><label class="chk" style="margin-top:8px"><input type="checkbox" id="c2-send" ${st.send ? "checked" : ""}><span><h3>3차 최종원고 카카오톡 전송 완료</h3></span></label></div></li>
+      </ol></div>
+      <p class="lead">받는 대로 반영해 본문 편집을 이어 가겠습니다. 번거로우시겠지만 확인 부탁드립니다. 감사합니다.</p>
+    </section>
+
+    <div class="end">
+      <a class="btn" href="#proof">← 1차 교정교열</a>
+      <a class="btn primary" href="#pf2-1" id="pf2-top">처음 단계로 ↑</a>
+    </div>`;
+  const sync = () => {
+    const s = pf2Load(), n = Object.values(s).filter(Boolean).length;
+    document.getElementById("pf2-bar").style.width = Math.round(n / total * 100) + "%";
+    document.getElementById("pf2-count").textContent = `확인 ${n} / ${total}항목`;
+  };
+  app.querySelectorAll(".checks .chk input").forEach(cb => cb.addEventListener("change", () => {
+    const li = cb.closest(".chk"), s = pf2Load();
+    s[li.dataset.id] = cb.checked; pf2Save(s); li.classList.toggle("done", cb.checked); sync();
+  }));
+  document.getElementById("c2-send").addEventListener("change", e => { const s = pf2Load(); s.send = e.target.checked; pf2Save(s); sync(); });
+  document.getElementById("pf2-top").addEventListener("click", e => { e.preventDefault(); document.getElementById("pf2-1").scrollIntoView({ block: "start" }); });
+  sync();
+  window.scrollTo(0, 0);
+}
+
 function route() {
   const h = location.hash.replace(/^#/, "");
   const m = h.match(/^plan-([123])(?:-\d+)?$/);   // 예전 상세 주소(#plan-2-5)도 시안 페이지로
-  // 주소만으로 들어오면(해시 없음) 최종원고 교정교열 화면을 먼저 보여 줌 — 홈은 #home
-  if (h === "plan-r") revPage(); else if (h === "proof" || h === "") proofPage(); else if (m) planPage(m[1]); else home();
+  // 주소만으로 들어오면(해시 없음) 가장 최근 교정교열(2차) 화면을 먼저 보여 줌 — 홈은 #home
+  if (h === "plan-r") revPage(); else if (h === "proof2" || h === "") proof2Page(); else if (h === "proof") proofPage(); else if (m) planPage(m[1]); else home();
   withProgress();
 }
 // 모든 페이지에 진행 상황 패널을 붙임(홈은 이미 있음). 노드를 옮겨 담아 각 페이지의 이벤트는 그대로 유지
