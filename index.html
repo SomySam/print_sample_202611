@@ -329,7 +329,7 @@ function setTabs(k) {
 
 // 전체 진행 상황 — 단계가 바뀌면 이 목록의 state만 고친다. done 완료 · now 진행 중 · wait 회신 대기 · todo 예정
 const PROGRESS = {
-  updated: "2026-11-19",
+  updated: "2026-11-25",
   steps: [
     { state: "done", title: "기존 자료·원고 분석", date: "11.14", note: "2023·2024 연보, 결핵연보 원고 검토" },
     { state: "done", title: "1차 시안 (1·2·3안)", date: "11.14–15", note: "표지·내지 디자인 시스템 3가지 방향" },
@@ -339,7 +339,8 @@ const PROGRESS = {
     { state: "done", title: "제공처 확인 사항 회신", date: "11.19", note: "신환자율 20.4 확정, 지도 진하기 순서 동구>대덕구>중구>서구>유성구" },
     { state: "done", title: "최종 원고 수령", date: "11.19", note: "결핵연보 최종 수정본·피드백, 감시연보 표·그림 모음" },
     { state: "done", title: "최종 원고 교정교열", date: "11.19", note: "피드백 반영, 오탈자 수정, 수치 대조 — 변경 이력 193건, 확인 요청 186건" },
-    { state: "wait", title: "제공처 확인 → 2차 최종원고 회신", date: "", note: "'최종원고 교정교열' 메뉴 순서대로 확인 후 카카오톡으로 회신" },
+    { state: "done", title: "제공처 확인 → 2차 최종원고 회신", date: "11.24", note: "결핵연보 2차 최종원고·확인 요청 회신, 감시연보 한글 원고·표 수령" },
+    { state: "now", title: "2차 최종원고 데이터 파악", date: "11.25", note: "내용 확인, 오탈자 확인, 데이터 정합성 점검 중" },
     { state: "todo", title: "본문 조판", date: "예정", note: "확정 디자인으로 전체 쪽 조판" },
     { state: "todo", title: "교정 (1차·2차)", date: "예정", note: "제공처 교정 반영" },
     { state: "todo", title: "인쇄용 PDF 납품", date: "예정", note: "PDF/X-1a:2001, CMYK" }
@@ -353,7 +354,7 @@ function progressPanel() {
   const items = s.map((x, i) => `
       <li class="step ${x.state}"${x.state === "now" ? ' aria-current="step"' : ""}>
         <span class="dot" aria-hidden="true">${x.state === "done" ? "✓" : i + 1}</span>
-        <div><h3>${esc(x.title)}<span class="state">${x.state === "done" ? `<span class="mono">${esc(x.date)}</span>` : STATE_KO[x.state]}</span></h3>
+        <div><h3>${esc(x.title)}<span class="state">${x.state === "done" ? `<span class="mono">${esc(x.date)}</span>` : STATE_KO[x.state] + (x.state === "now" && x.date ? ` <span class="mono">${esc(x.date)}</span>` : "")}</span></h3>
         <p>${esc(x.note)}</p></div>
       </li>`).join("");
   return `
